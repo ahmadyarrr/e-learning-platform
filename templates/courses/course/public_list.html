@@ -1,0 +1,94 @@
+{% extends "base/base.html" %}
+{%load cache%}
+{% block title %}
+    {% if subject %}
+        {{ subject.title }} courses
+    {% else %}
+        All courses
+    {% endif %}
+{% endblock %}
+{%block head%}
+<style>
+    .contentss{
+        background-color: black;
+        color: white;
+        width: 20%;
+        margin-top: 1%;
+    }
+    #all{
+        display: flex;
+    }
+    .module{
+        margin-left: 10%;
+    }
+    .selected{
+        background-color: ;
+    }
+    a{
+        text-decoration: none;
+
+    }
+    #modules span{
+        margin-left: 12%;
+    }
+    #modules a{
+        color: wheat;
+    }
+
+</style>
+{%endblock%}
+
+{% block body %}
+    <h1>
+    {% if subject %}
+        {{ subject.title }} courses
+    {% else %}
+        All courses
+    {% endif %}
+    </h1>
+    <div id="all">
+    <div class="contentss">
+        <h3>Subjects</h3>
+        <ul id="modules">
+            <li {% if not subject %}class="selected"{% endif %}>
+                <a href="{% url "view_courses" %}">All</a>
+            </li>
+            <br>
+            {% cache 100 diss %}
+            {% for s in subjects %}
+                <li {% if subject == s %}class="selected"{% endif %}>
+                    <a href="{% url "subject_courses" s.slug %}">
+                        {{ s.title }}
+                        <br>
+                        <span >
+                            {{ s.count_course }} course{{ s.count_course|pluralize }}
+                        </span>
+                    </a>
+                </li>
+                <br>
+            {% endfor %}
+            {%endcache%}
+
+    </ul>
+    </div>
+
+    <div class="module">
+        {% for course in courses %}
+            {% with subject=course.subject %}
+            <h3>
+                <a href="{% url "course_detail" course.slug %}">
+                    {{ course.title }}
+                </a>
+            </h3>
+                <p>
+                    <a href="{% url "subject_courses" subject.slug %}">
+                        {{ subject }}
+                    </a>.
+                    {{ course.count_module }} modules.
+                    Instructor: {{ course.instructor.username }}
+                </p>
+            {% endwith %}
+        {% endfor %}
+    </div>
+    <div>
+{% endblock %}

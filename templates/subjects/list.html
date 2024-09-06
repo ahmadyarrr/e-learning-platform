@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+{% block title %}
+  Subjects
+{% endblock %}
+{% block body %}
+  <h1>My Subjects</h1>
+  <ul>
+    {% for sub in subjects %}
+      <li>
+        <p>
+          Subject '{{ sub.title }}'<a href="/">Edit</a>
+        </p>
+      </li>
+    {% empty %}
+      You are not owning any subject yet, dear manager!
+    {% endfor %}
+    <a class="btn btn-primary" href="{%url 'create_update_subject'%}">Create a Subject</a>
+  </ul>
+{% endblock %}

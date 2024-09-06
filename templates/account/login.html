@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% load account allauth %}
+{% load static %}
+{% block head %}
+  {% comment %} <link rel="stylesheet" href="{% static 'css/account/login.css' %}" /> {% endcomment %}
+{% endblock %}
+{% block body %}
+  <div class="container d-flex justify-content-center" style="margin-top: 5%;">
+    <h1>Login</h1>
+  </div>
+  {% if form.errors %}
+    <br />
+    <div class="container d-flex justify-content-center text-danger">
+      <br />
+      <pre>Username or password incorrect!</pre>
+    </div>
+  {% endif %}
+  <br />
+
+  <div style="box-shadow: 1px 1px 6px 6px lightgray;padding: 2%;" class="container  w-25">
+    <form action="{% url 'account_login' %}" method="post" class="container justify-content-center">
+      <label style="display: block;">Username:</label>
+      <input type="text" placeholder="username" name="login" class="mt-2 mb-2 w-100" />
+      <br />
+      <label style="display: block;">Password:</label>
+      <input type="password" placeholder="password" name="password" class="mb-2 mt-2 w-100" />
+
+      <div style="">
+        <input type="submit" value="Login" class="btn btn-primary mt-3 w-100" />
+      </div>
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      {% csrf_token %}
+      <p style="margin-top: 3%;" class="">
+        Don't Have An Account? 
+        <button type="button" onclick="document.getElementById('signup-dialog').showModal()"  style="text-decoration: none;btn btn-success" >Sign Up</button>
+      </p>
+      <dialog  id="signup-dialog" style="margin-top: 10%;background-color: aliceblue;border-radius: 10px;border: 1px solid black;box-shadow: 0px 0px 4px 6px lightblue;">
+        <button style="margin-left: 90%;" class="btn btn-primary"  type="button" onclick="document.querySelector('dialog').close()">X</button>
+
+        <div class="container d-flex flex-column align-items-center">
+          <h2>What type of account are you going to create?<h2>
+          
+          <br />
+            <a style="text-decoration: none;" class="btn btn-success" href="{% url 'students:register' %}">Student Account</a>
+            <a style="text-decoration: none;" class="btn btn-primary" href="{% url 'instructors:register' %}">Instructor Account</a>
+
+        </div>
+      </dialog>
+    </form>
+    
+  </div>
+  
+{% endblock %}

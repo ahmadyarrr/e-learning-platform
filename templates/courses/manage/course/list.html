@@ -1,0 +1,25 @@
+{% extends "base/base.html" %}
+{%block body%}
+    <h1>My Courses</h1>
+    <div>
+        {%for course in object_list %}
+        <div>
+            <h3>{{course.title}}</h2>
+            <p style="zoom: 80%;">
+                <a class="btn btn-success" href="{%url 'course:course_update' course.id %}">Edit</a>
+                <a class="btn btn-info" href="{%url 'course:module_manage' course.id %}">Edit Modules</a>
+                {%if course.modules.count > 0%}
+                <a href="{%url 'course:module_content_list' course.modules.last.id %}">
+                    Manage Contents
+                </a>
+                {%endif%}
+                <a class="btn btn-danger" href="{%url 'course:course_delete' course.id %}">Delete</a>
+            
+            </p>
+        </div>
+        {%empty%}
+        <p>You don't have any courses yet!</p>
+        {%endfor%}
+        <a class="btn btn-success" href="{%url 'course:course_create'%}">Create a new course</a>
+    </div>
+{%endblock%}

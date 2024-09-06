@@ -1,0 +1,88 @@
+{% extends 'base/base.html' %}
+{% block title %}
+  Chat room for "{{ course.title }}"
+{% endblock %}
+{% block body %}
+  <div id="chat"></div>
+  <form id="chat-form">
+    <div id="chat-input">
+      <input name="message" id="chat-message-input" type="text" />
+      <input  id="chat-message-submit" type="submit" value="Send" />
+    </div>
+  <form>
+    <div id="messages">
+
+    </div>
+{% endblock %}
+{% block include_js %}
+  {{course.id|json_script:'course-id'}}
+  {{time|json_script:'time-data'}}
+  {{request.user.username|json_script:'request-user'}}
+{% endblock %}
+{% block domeready %}
+
+  // getting course id
+  const course_id = JSON.parse(document.getElementById('course-id').textContent);
+ 
+  // getting username
+  const request_user = JSON.parse(document.getElementById('request-user').textContent);
+
+  console.log(course_id,request_user)
+
+  // creating the room url for the specific course
+  const url = 'ws://'+window.location.host+'/ws/chat/room/'+ course_id + '/';
+  console.log(url);
+  
+  // creating the WebSocket
+  let chatSoc = new WebSocket(url);
+  console.log('connection successful!');
+
+  // handling the server's messages; note that it is called everytime a message is sent here
+  chatSoc.onmessage = function(e){
+
+    // e.data refers to the data comming from server-side
+    const data = JSON.parse(e.data);
+    console.log(data,"+++++++++++++++++++")
+    if (data.type =='chat_message'){
+      console.log('in condition------------')
+      
+      // determining the date the message has been sent
+      const date_options = {'hour':'numeric','minute':'numeric',hour12:true}
+      const date_sent = new Date(data.time).toLocaleString(date_options)
+
+      // setting author info
+      const sender = data.sender;
+      const isMe = sender == request_user;
+      console.log(sender,request_user,isMe,"=====---")
+      const name = isMe ? 'Me': sender;
+      const source = isMe ? 'me':'other'; // used for left-right direction styling
+
+      // assigning the message box to a variable and adding content
+      const mess = document.getElementById('messages')
+      mess.innerHTML += `<div class="message-${source}">`+
+                        `<strong>${name}</strong>`+
+                        `<span class="date">${date_sent}</span></br>`+
+                        `${data.message}   </div>` 
+      mess.scrollTop = mess.scrollHeight;
+    }
+  }
+  chatSoc.onclose = function(){
+    console.log('Chat was closed!')
+  }
+  // sending the message using the form, no by submission
+  const form = document.getElementById('chat-form');
+  console.log('got the form',form)
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    console.log('-----------------')
+    let message = e.target.message.value;
+    chatSoc.send(JSON.stringify({
+      'message':message,
+    }))
+    form.reset();
+
+  })
+
+
+
+{% endblock %}

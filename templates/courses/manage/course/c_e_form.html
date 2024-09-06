@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+  {%block title%}  
+{% if form.instance %}
+    Edit Course
+  {% else %}
+    Create new course
+  {% endif %}
+{%endblock%}
+{%block style%}
+  label{
+    display: block;
+  }
+  select{
+    background-color: lightgreen;
+  }
+{%endblock%}
+{% block body %}
+  <h3 >
+    {% if object %}
+      Edit course {{ object.title }}
+    {% else %}
+      Creating a new course
+    {% endif %}
+  </h1>
+  <div  class="course-info container d-flex flex-column align-items-center w-50">
+    <h3>Course info</h1>
+    <form method="post" style="">
+      {{ form.as_p }}
+      {% csrf_token %}
+      <p>
+        <input class="btn btn-primary w-100" type="submit" value="Save course" />
+      </p>
+    </form>
+  </div>
+{% endblock %}

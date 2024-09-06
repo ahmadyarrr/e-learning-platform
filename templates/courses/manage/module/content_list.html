@@ -1,0 +1,186 @@
+{% extends 'base/base.html' %}
+{%load mytags%}
+{%load static%}
+{% block title %}
+  Module {{ module.order|add:1 }}: {{ module.title }}
+{% endblock %}
+{%block head%}  
+<style>
+  a{
+    text-decoration: none;
+  }
+  #things{
+    margin-top: 3%;
+    display: flex;
+  }
+  #last_module{
+    margin-left: 15%;
+  }
+  #sidebar{
+    padding: 3%;
+    border-radius: 10px;
+    border:1px solid black;
+    box-shadow: 0px 10px 10px 1px lightgray;
+  }
+  #course_title{
+    padding: 1%;
+    border-radius: 10px;
+    border:1px solid black;
+    box-shadow: 0px 10px 10px 1px lightgray;
+  }
+  #sidebar li:hover{
+    transform:translate(10px);
+    background-color:darkviolet;
+    border-radius: 10px;
+
+  }
+
+  #content_{
+    padding: 2%;
+    border-radius: 10px;
+    border:1px dashed black;
+    box-shadow: 0px 2px 2px 1px lightgray;
+    margin-bottom: 5%;
+  }
+</style>
+{%endblock%}
+{% block body %}
+
+  <!-- listing all modules related to this course -->
+  
+  {% with course=module.course %}
+    
+  <h1 id="course_title">Course '{{ course.title }}'</h1>
+  <div id="things">
+    <!--side bar-->  
+  <div id='sidebar'>
+    <h2>Modules</h2>
+    <!--a ul should be notified to sortable not a div-->
+    <ul id="modules">
+      {% for m in course.modules.all %}
+      <div id="module">
+        <li data-id="{{m.id}}" data-order="{{m.order}}" class="{% if m == module %}selected{% endif %}">
+          <a  href="{% url 'course:module_content_list' m.id %}">
+            Module <span class="order">{{ m.order|add:1 }}</span>
+            <br />
+            {{ m.title }}
+          </a>  
+        </li>
+      </div>
+      {% empty %}
+        No modules Yet
+      {% endfor %}
+    </ul>
+    <p><a class="btn btn-primary" href="{%url 'course:course_update' course.id %}">Edit Moudles</a></p>
+    
+    {% endwith %}
+    </div>
+
+  <!-- showing all contents of this module -->
+  <div id="last_module" >
+  <h2>Module {{ module.order|add:1 }}: {{module.title}}</h2>
+  
+  <h3>Contents:</h3>
+  <ul id="contentss">
+  {% for content in module.contents.all %}
+  <li data-id={{content.id}}>
+  <div id="content_">  
+    {% with item=content.item %}
+      <p id="content_title">{{ item }}</p>
+      <div style="display: flex;">
+          <a class="btn btn-info w-25" href="{%url 'course:module_content_update' module.id item|model_name item.id %}">Edit</a>
+          <form method="post" action="{% url 'course:module_content_delete' content.id %}">
+            {% csrf_token %}
+            <input  style="margin-left: 10px;" class="btn btn-danger w-100" type="submit" value="Delete" />
+          </form></div>
+        {% endwith %}
+        <br>
+      </div>
+  </li>
+
+  {% empty %}
+
+  <p> This module has not contents yet! </p>
+  {% endfor %}
+  </ul>
+  
+  <!--creating new content-->
+  <h3 class="text text-success">Create new content</h3>
+  <a href="{%url 'course:module_content_create' module.id 'text' %}">Text</a>
+  <a href="{%url 'course:module_content_create' module.id 'file' %}">File</a>
+  <a href="{%url 'course:module_content_create' module.id 'image' %}">Image</a>
+  <a href="{%url 'course:module_content_create' module.id 'video' %}">Video</a>
+  </div>
+</div>
+{% endblock %}
+{% block include_js%}
+<script src="{%static 'js/sortable.js' %}">
+</script>
+
+{%endblock%}
+{%block domeready%}
+  var options= {
+    method:'POST',
+    mode: 'same-origin',
+  };
+  const moudleOrderUrl = '{%url "course:order_module" %}';
+  var p = sortable('#modules',{
+    sort:true,
+    forcePlaceholderSize: true,
+    placeholderClass: 'placeholder2'
+  })
+  p[0].addEventListener('sortupdate',function(){
+    var orders = {}
+    // getting the orders of all li's 
+    const items = document.querySelectorAll('#modules li');
+    items.forEach(function(li_item, index){
+      // appending the order to orders var
+      orders[li_item.dataset.id] = index;
+
+      // updating html
+      li_item.querySelector('.order').innerHTML  = index + 1
+    
+      // creating a json string
+      const data = JSON.stringify(orders)
+      options['body'] = data
+      
+      // sending data using fetch
+      fetch(moudleOrderUrl,options)
+
+      
+    })
+
+  })
+  // content
+  var options2 ={
+    method:'POST',
+    mode: 'same-origin',
+  };
+  const contentOrderUrl = '{%url "course:order_content" %}';
+  var p2 = sortable('#contentss',{
+    sort:true,
+    forcePlaceholderSize: true,
+    placeholderClass: 'placeholder2'
+  })
+  p2[0].addEventListener('sortupdate',function(){
+    var orders2 = {}
+
+    // getting the orders of all li's 
+    const items = document.querySelectorAll('#contentss li');
+    items.forEach(function(li_item, index){
+      // appending the order to orders var
+      orders2[li_item.dataset.id] = index;
+
+      // creating a json string
+      const data = JSON.stringify(orders2)
+      options2['body'] = data
+      // sending data using fetch
+      fetch(contentOrderUrl,options2)
+
+      
+    })
+
+  })
+  
+
+{%endblock%}

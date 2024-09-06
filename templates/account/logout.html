@@ -1,0 +1,16 @@
+{% extends 'base/base.html' %}
+{% load allauth account %}
+{% block body %}
+  <div class="container text-center" style="width: 50%;margin: auto;">
+    <h1 class="">Are you sure to log out?</h1>
+    <br>
+    <form method="post" action="{%url 'account_logout' %}">
+        {%csrf_token%}
+        {%if redirect_field_value %}
+            <input type="hidden" name="redirect_field_value" value="{{redirect_field_value}}">
+        {%endif%}
+        <a href="/" class="btn btn-primary">Back</a>
+        <input type="submit" class="btn btn-danger" value="Yes!">
+    </form>
+    </div>
+{% endblock %}

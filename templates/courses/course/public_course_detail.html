@@ -1,0 +1,40 @@
+{% extends "base/base.html" %}
+{%load account allauth%}
+{% block title %}
+    {{ object.title }}
+{% endblock %}
+{%block head%}
+    <style>
+        a{
+            text-decoration: none;
+        }
+    </style>
+{%endblock%}
+{% block body %}
+    {% with subject=object.subject %}
+        <h1>
+            {{ object.title }}
+        </h1>
+        <div class="module">
+            <h2>Overview</h2>
+            <p>
+                <a href="{% url "subject_courses" subject.slug %}">
+                    {{ subject.title }}
+                </a>.
+                {{ object.modules.count }} modules.
+                Instructor: {{ object.instructor.username }}
+            </p>
+            {{ object.description|linebreaks }}
+            {%if request.user.is_authenticated%}
+                <form method="post" action="{%url 'course:enroll_student'%}">
+                    {%csrf_token%}
+                    {{enroll_form.as_p}}
+                    <input type="submit" value="Enroll" class="btn btn-primary">
+                </form>
+
+            {%else%}
+            <a class="btn btn-success" href="{%url 'account_login' %}?next={%url 'course_detail' object.slug%}">Login And Enroll</a>
+            {%endif%}
+        </div>
+    {% endwith %}
+{% endblock %}

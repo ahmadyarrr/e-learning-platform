@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% load static %}
+{% load allauth account %}
+<html>
+  <head>
+    <title>
+      Educa|{% block title %}
+      {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{%static 'css/course/base.css'%}">
+    <link rel="stylesheet" href="{% static 'boot/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'boot/css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'boot/css/bootstrap.grid.css' %}" />
+    
+    {% block head %}
+    {% endblock %}
+  </head>
+  <body>
+    {% include './header.html' %}
+    <div id="content" >
+      {% block body %}
+      {% endblock %}
+    </div>
+
+    {% include './footer.html' %}
+    {%block include_js%}
+    {%endblock%}
+    <script>
+            window.addEventListener("DOMContentLoaded",(event) => {
+                {%block domeready%}{%endblock%}
+            })
+    </script>
+  </body>
+</html>

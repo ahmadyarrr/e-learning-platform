@@ -1,0 +1,34 @@
+{%extends 'base/base.html'%}
+{%block head%}
+    <style>
+
+        #signup_content label{
+            display: block;
+        }
+        #signup_content input{
+            width: 100%;
+        }
+        #signup_content span{
+            display: block;
+        }
+    </style>
+    <script>
+        
+    </script>
+{%endblock%}
+{%block body%}
+<h1 style="text-align: center;margin-top: 4%;margin-bottom: 2%;">Sign Up</h1>
+<div id="signup_content" style="width: 30%; box-shadow: 1px 1px 6px 6px lightgray;padding: 2%;" class="container d-flex justify-content-center" >
+    <form  method="post" enctype="multipart/form-data" acction="{%url 'students:register'%}">
+    {%csrf_token%}
+    {{form.as_p}}
+    <input type="submit" class="btn btn-primary"  value="Save">
+</form>
+</div>
+{% endblock %}
+{%block domeready%}
+    var list = document.querySelectorAll('ul');
+            list.forEach(l =>{
+                l.style.display = 'none';
+            });
+{%endblock%}

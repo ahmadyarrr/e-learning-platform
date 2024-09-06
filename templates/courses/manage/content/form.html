@@ -1,0 +1,42 @@
+{% extends 'base/base.html' %}
+{% block title %}
+  {% if object %}
+    Edit Content '{{ object }}'
+  {% else %}
+    Add new content
+  {% endif %}
+{% endblock %}
+{% block style %}
+  label{ display:block;
+
+  }
+  .title{
+    margin-top:2%;
+  }
+  h6{
+    margin-top:5%;
+  }
+  #id_image{
+    background-color:cyan;
+  }
+  #id_title {
+    width:100%;
+  }
+{% endblock %}
+{% block body %}
+  <div class="container d-flex flex-column align-items-center">
+    <h1 class="title">
+      {% if object %}
+        Edit Content '{{ object }}'
+      {% else %}
+        Add new content
+      {% endif %}
+    </h1>
+    <h6>Course content</h6>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input class="btn btn-primary w-100" type="submit" value="Save Content" />
+    </form>
+  </div>
+{% endblock %}

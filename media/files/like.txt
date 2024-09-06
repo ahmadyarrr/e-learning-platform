@@ -1,0 +1,18 @@
+											like 
+there are 2 wildcards used
+1- %		----------> zero,one,two ro more
+2- _		----------> just one
+
+
+syntax:
+	select *,cl1.. from company where name like 't%';
+	select from company where filani like f'ilani%'
+	
+	
+we cannot use like with numbers unless we cast them
+	
+	select * from company where age::text like  '2%';
+	select * from company where age::text like  '1_4';
+
+
+

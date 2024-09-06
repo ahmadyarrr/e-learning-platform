@@ -1,0 +1,12 @@
+{%extends 'base/base.html'%}
+{%block title%}
+Delete a course
+{%endblock%}
+{% block body %}
+    <h3 class="text">Are you sure wanna delete {{object}}?</h3>    
+    <form class="container d-flex flex-row justify-contents-right" method="post" action="{%url 'course:course_delete' object.id%}">
+        {%csrf_token%}
+        <a     class= "btn btn-info " href="{%url 'course:manage_course_view'%}">Cancel</a>
+        <input class= "btn btn-danger" style="margin-left: 5px;" type="submit" value="Confirm">
+    </form>
+{% endblock body %}
