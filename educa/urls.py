@@ -27,8 +27,7 @@ urlpatterns = [
     path("accounts/",include("allauth.urls")),
     path("course/",include("course.urls",namespace="course")),
     path("api/",include("course.api.urls",namespace='api')),
-    # a course detail
-    path("detail/<slug:slug>",CourseDetail.as_view(),name="course_detail"),
+    
     # public courses
     path('',cache_page(5)(ViewCourses.as_view()),name="view_courses"),
     path('subject/<slug:subject>/',ViewCourses.as_view(),name='subject_courses'),

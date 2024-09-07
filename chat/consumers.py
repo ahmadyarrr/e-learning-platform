@@ -1,4 +1,4 @@
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from asgiref.sync import async_to_sync
 from django.utils.timezone import now
@@ -8,31 +8,28 @@ from django.utils.timezone import now
 """
 
 
-class ChatConsumer(WebsocketConsumer):
+class ChatConsumer(AsyncWebsocketConsumer):
 
-    def connect(self):
+    async def connect(self):
         # getting the course name and making its group name
         self.course_id = self.scope["url_route"]["kwargs"]["course_id"]
         self.course_group_name = "course_group" + self.course_id
-        async_to_sync(self.channel_layer.group_add)(
-            self.course_group_name, self.channel_name
-        )
+        # joining the group room
+        await self.channel_layer.group_add(self.course_group_name,
+                                           self.channel_name)
         self.user = self.scope["user"]
-        self.accept()
+        await self.accept()
 
-    def disconnect(self, code):
-        async_to_sync(
-            self.channel_layer.group_discard(self.course_group_name, self.channel_name)
-        )
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.course_group_name, self.channel_name)
 
-    def receive(self, text_data=None, bytes_data=None):
+    async def receive(self, text_data=None, bytes_data=None):
         if text_data:
             data = json.loads(text_data)
             message = data["message"]
             print("message received:", message)
-            # self.send(text_data=json.dumps({"typee": "message", "message": message}))
-            # sending the message to the whole group members
-            async_to_sync(self.channel_layer.group_send)(
+            # broadcasting the message
+            await self.channel_layer.group_send(
                 self.course_group_name,
                 {
                     "type": "chat_message",
@@ -42,6 +39,7 @@ class ChatConsumer(WebsocketConsumer):
                 },
             )
 
-    def chat_message(self, event):
+    async def chat_message(self, event):
         print(event, "=----event valu in chat_message")
-        self.send(text_data=json.dumps(event))
+        # event is ....
+        await self.send(text_data=json.dumps(event))

@@ -12,8 +12,7 @@ from .views import (
     CourseUpdateView,
     ModuleContentList,
     ContentDelete,
-    CourseDetail,
-    ViewCourses
+    CourseDetail
 )
 
 app_name = "course"
@@ -43,6 +42,7 @@ urlpatterns = [
     path("module/order/",ModuleOrder.as_view(),name="order_module"),
     path("content/order/",ModuleContentOrder.as_view(),name="order_content"),
     path('enroll',courseEnrollView.as_view(),name="enroll_student"),
-    # details
+    # a course detail
+    path("detail/<slug:slug>",CourseDetail.as_view(),name="course_detail"),
     
 ]

@@ -51,7 +51,7 @@
         <h3>Subjects</h3>
         <ul id="modules">
             <li {% if not subject %}class="selected"{% endif %}>
-                <a href="{% url "view_courses" %}">All</a>
+                <a href="{% url "`view_courses" %}">All</a>
             </li>
             <br>
             {% cache 100 diss %}
@@ -76,7 +76,7 @@
         {% for course in courses %}
             {% with subject=course.subject %}
             <h3>
-                <a href="{% url "course_detail" course.slug %}">
+                <a href="{% url "course:course_detail" course.slug %}">
                     {{ course.title }}
                 </a>
             </h3>

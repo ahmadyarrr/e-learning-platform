@@ -5,7 +5,9 @@ from .models import InstructorProfile
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from .forms import InstructorRegisterForm
+from django.contrib.auth.models import Group
 # Create your views here.
+
 class InstructorRegisterView(SignupView, TemplateResponseMixin):
     form_class = InstructorRegisterForm
     template_name = "account/instructors/register.html"
@@ -22,8 +24,12 @@ class InstructorRegisterView(SignupView, TemplateResponseMixin):
             InstructorProfile.objects.create(
                 image=data["image"], phone=data["phone"], user=user
             )
+            instructors_group  = Group.objects.get(name="Instructors")
+            instructors_group.user_set.add(user)
+            
             # logging the user in
             login(request,user)
+            
         else:
             return self.render_to_response({"form": form, "errors": form.errors})
         return redirect('course:manage_course_view')
