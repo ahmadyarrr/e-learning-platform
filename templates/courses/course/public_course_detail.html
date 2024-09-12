@@ -1,7 +1,7 @@
 {% extends "base/base.html" %}
 {%load account allauth%}
 {% block title %}
-    {{ course.title }}
+    {{ object.title }}
 {% endblock %}
 {%block head%}
     <style>
@@ -11,9 +11,9 @@
     </style>
 {%endblock%}
 {% block body %}
-    {% with subject=course.subject %}
+    {% with subject=object.subject %}
         <h1>
-            {{ course.title }}
+            {{ object.title }}
         </h1>
         <div class="module">
             <h2>Overview</h2>
@@ -21,23 +21,19 @@
                 <a href="{% url "subject_courses" subject.slug %}">
                     {{ subject.title }}
                 </a>.
-                {{ course.modules.count }} modules.
-                Instructor: {{ course.instructor.username }}
+                {{ object.modules.count }} modules.
+                Instructor: {{ object.instructor.username }}
             </p>
-            {{ course.description|linebreaks }}
+            {{ object.description|linebreaks }}
             {%if request.user.is_authenticated%}
-                {%if not request.user in course.students.all %}
                 <form method="post" action="{%url 'course:enroll_student'%}">
                     {%csrf_token%}
                     {{enroll_form.as_p}}
                     <input type="submit" value="Enroll" class="btn btn-primary">
                 </form>
-                {%else%}    
 
-                <strong> You're enrolled in this course.</strong>
-                {%endif%}
             {%else%}
-            <a class="btn btn-success" href="{%url 'account_login' %}?next={%url 'course:course_detail' course.slug%}">Login And Enroll</a>
+            <a class="btn btn-success" href="{%url 'account_login' %}?next={%url 'course:course_detail' object.slug%}">Login And Enroll</a>
             {%endif%}
         </div>
     {% endwith %}

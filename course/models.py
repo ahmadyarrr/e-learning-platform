@@ -34,7 +34,6 @@ class Course(models.Model):
     students = models.ManyToManyField(User,
                                       related_name='enrolled_courses',
                                       blank=True)
-    
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=200,
                             unique=True)

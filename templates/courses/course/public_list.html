@@ -51,7 +51,7 @@
         <h3>Subjects</h3>
         <ul id="modules">
             <li {% if not subject %}class="selected"{% endif %}>
-                <a href="{% url "`view_courses" %}">All</a>
+                <a href="{% url "view_courses" %}">All</a>
             </li>
             <br>
             {% cache 100 diss %}
