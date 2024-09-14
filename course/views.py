@@ -27,6 +27,7 @@ from .mixins import (
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
 
+
 def slugify(sen):
     return "-".join(sen.split())
 
@@ -57,7 +58,6 @@ class SubjectCreateUpdateView(
     obj = None
     model = Subject
     template_name = "subjects/create_update.html"
-
 
     def get_form(self, *args, **kwargs):
         form = modelform_factory(model=self.model, exclude=["owner", "slug"])
@@ -136,11 +136,11 @@ class CourseDeleteView(InstructorCourseMixin, DeleteView):
 
 
 # login required mixin does not work!
-class ModuleUpdateView(LoginRequiredMixin,View, TemplateResponseMixin):
+class ModuleUpdateView(LoginRequiredMixin, View, TemplateResponseMixin):
     template_name = "courses/manage/module/formset.html"
     course = None
     model = Module
-    
+
     def get_formset(self, data=None):
         return ModuleForm(instance=self.course, data=data)
 
@@ -148,9 +148,6 @@ class ModuleUpdateView(LoginRequiredMixin,View, TemplateResponseMixin):
         self.course = get_object_or_404(Course, id=pk, instructor=request.user)
         return super().dispatch(request, pk, *args, **kwargs)
 
-        
-        
-        
     def get(self, request, *args, **kwargs):
         formset = self.get_formset()
         return self.render_to_response({"course": self.course, "formset": formset})
@@ -263,7 +260,7 @@ class ContentDelete(View):
         return JsonResponse({"Error": "Method not allowed"}, status=405)
 
 
-class ModuleContentList(TemplateResponseMixin, View):
+class ModuleContentListInstructor(TemplateResponseMixin, View):
     template_name = "courses/manage/module/content_list.html"
 
     def get(self, request, id):
@@ -301,30 +298,29 @@ class ViewCourses(View, TemplateResponseMixin):
     template_name = "courses/course/public_list.html"
 
     def get(self, request, subject=None, *args, **kwargs):
-        subjects = cache.get('all_subjects')
+        subjects = cache.get("all_subjects")
         if not subjects:
             subjects = Subject.objects.all().annotate(count_course=Count("courses"))
-            cache.set('all_subjects',subjects)
+            cache.set("all_subjects", subjects)
 
-        all_courses = Course.objects.annotate(amount_modules=Count('modules'))        
+        all_courses = Course.objects.annotate(amount_modules=Count("modules"))
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
             # creating a dynammic key for subject-specifc courses in cache
             key = f"subject_{subject.id}_courses"
             courses = cache.get(key)
-            
+
             if not courses:
                 # if courses not found in cache
                 courses = Course.objects.filter(subject=subject)
-                cache.set(key,courses)
+                cache.set(key, courses)
         else:
             # if no subject is specified
-            courses = cache.get('all_courses')
+            courses = cache.get("all_courses")
             if not courses:
                 # if cache miss
                 courses = all_courses
-                cache.set('all_courses',all_courses)
-                
+                cache.set("all_courses", all_courses)
 
         courses = Course.objects.all().annotate(count_module=Count("modules"))
         return self.render_to_response(
@@ -344,4 +340,4 @@ class courseEnrollView(FormView, LoginRequiredMixin):
 
     def get_success_url(self) -> str:
         # this method is called by super().form_valid in return redirect HttpResponseRedirect(self.get_success_url)
-        return reverse_lazy("student:student_course_detail", args=[self.course.id])
+        return reverse_lazy("students:student_course_detail", args=[self.course.id])

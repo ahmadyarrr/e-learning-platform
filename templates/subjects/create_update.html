@@ -10,6 +10,7 @@ Subject{%if obj%}Modification{%else%} Creation{%endif%}
     </style>
 {%endblock%}
 {% block body %}
+    <h1>{% if obj %}Edit Subject '{{obj.title}}'{%else%}Creating a Subject{% endif %}</h1>
     <div id="form">
         <form method="post">
             {%csrf_token%}

@@ -23,7 +23,7 @@ class RegisterStudentView(SignupView, TemplateResponseMixin):
     template_name = "account/students/register.html"
     
     def get(self, request, *args, **kwargs):
-        form = StduentSignUpCustomForm()
+        form = self.form_class()
         return self.render_to_response({"form": form})
 
     def post(self, request, *args, **kwargs):
@@ -34,11 +34,11 @@ class RegisterStudentView(SignupView, TemplateResponseMixin):
             StudentProfile.objects.create(
                 image=data["image"], phone=data["phone"], user=user
             )
-            print('ok')
             # logging the user in
             login(request,user)
         else:
             return self.render_to_response({"form": form, "errors": form.errors})
+
         return redirect('students:student_course_list')
 
 
@@ -85,7 +85,7 @@ class StudentCourseList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
         return super().dispatch(*args, **kwargs)
 
 
-class CourseDetail(DetailView, LoginRequiredMixin):
+class StudentCourseDetail(DetailView, LoginRequiredMixin):
     template_name = "student/course/detail.html"
     model = Course
 

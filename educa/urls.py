@@ -23,24 +23,34 @@ from django.views.decorators.cache import cache_page
 from course.views import CourseDetail, SubjectCreateUpdateView, ViewCourses,SubjectManage
 
 urlpatterns = [
+    
     path('admin/', admin.site.urls),
     path("accounts/",include("allauth.urls")),
     path("course/",include("course.urls",namespace="course")),
+    
+    # API
     path("api/",include("course.api.urls",namespace='api')),
     
-    # public courses
+    # course
     path('',cache_page(5)(ViewCourses.as_view()),name="view_courses"),
     path('subject/<slug:subject>/',ViewCourses.as_view(),name='subject_courses'),
-    # student
+    
+    # students
     path("student/",include('students.urls',namespace="students")),
+    
     # instructors
     path("instructor/", include("instructors.urls"), name="instructors"),
+    
     # subjects
     path("subjects/",SubjectManage.as_view(),name="manage_subjects"),
     path("subjects/create/",SubjectCreateUpdateView.as_view(),name="create_update_subject"),
-    path('__debug__',include('debug_toolbar.urls')),
+    path("subjects/<int:id>/update",SubjectCreateUpdateView.as_view(), name="subject_update"),
     # chat
-    path('chat/',include('chat.urls',namespace="chat"))
+    path('chat/',include('chat.urls',namespace="chat")),
+
+    # debug toolbar
+    path('__debug__',include('debug_toolbar.urls')),
+
 ]       
 
 if settings.DEBUG:

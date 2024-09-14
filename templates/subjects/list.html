@@ -8,7 +8,7 @@
     {% for sub in subjects %}
       <li>
         <p>
-          Subject '{{ sub.title }}'<a href="/">Edit</a>
+          Subject '{{ sub.title }}'<a href="{%url 'subject_update' sub.id %}">Edit</a>
         </p>
       </li>
     {% empty %}

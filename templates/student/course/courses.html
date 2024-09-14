@@ -16,13 +16,13 @@
       <div class="course-info">
         <h3>{{ course.title }}</h3>
             <p>
-                <a href="{% url 'student:student_course_detail' course.id %}">Access contents</a>
+                <a href="{% url 'students:student_course_detail' course.id %}">Access contents</a>
             </p>
       </div>
     {% empty %}
       <p>
         You are not enrolled in any courses yet.
-        <a href="{% url 'view_courses' %}">Browse courses</a>
+        <a class="btn btn-primary"  href="{% url 'view_courses' %}">Browse courses</a>
         to enroll on a course.
       </p>
     {% endfor %}
