@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/account/profile.css' %}" />
+{% endblock %}
+{% block body %}
+  <div id="whole">
+    {% include 'account/profile_generic.html' %}
+    <div id="personal-data">
+      <h1 id="title">Personal Details</h1>
+      <div id="detail-form">
+        <form method="post">{{ user_form.as_p }}
+          {{ personal_form.as_p }}</form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

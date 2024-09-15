@@ -1,0 +1,49 @@
+#sidebar {
+    margin-top: 5%;
+    border: 0.5px solid black;
+    padding: 10px 20px 10px 10px;
+    width: 40vh;
+    height: 80vh;
+}
+
+#sidebar img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+#sidebar a {
+    text-decoration: none;
+}
+
+#username {
+    margin-top: 4%;
+}
+
+#profile-title {
+    border-top: 5%;
+}
+#options{
+    margin-left: 0;
+}
+
+#whole{
+    display: flex;
+    flex-direction: row;
+
+}
+#title{
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#personal-data{
+    display: flex;
+    flex-direction: column;
+    margin-left: 5%;
+    margin-top: 2%;
+}
+
+label{
+    display: block;
+}

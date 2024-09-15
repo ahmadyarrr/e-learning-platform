@@ -27,12 +27,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/",include("allauth.urls")),
     path("course/",include("course.urls",namespace="course")),
-    
+    path("me/", include("_account.urls", namespace="_account")),
     # API
     path("api/",include("course.api.urls",namespace='api')),
     
     # course
-    path('',cache_page(5)(ViewCourses.as_view()),name="view_courses"),
+    path('',ViewCourses.as_view(),name="view_courses"),
     path('subject/<slug:subject>/',ViewCourses.as_view(),name='subject_courses'),
     
     # students

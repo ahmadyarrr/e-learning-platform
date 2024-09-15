@@ -10,12 +10,12 @@ from django.urls import reverse
 
 class Subject(models.Model):
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200)
     owner = models.ForeignKey(
         "auth.User",
         on_delete=models.CASCADE,
         related_name="subjects",
-        default=User.objects.get(username="sezar").id,
+        default=User.objects.get(username="developer").id,
     )
     description = models.TextField(null=True, blank=True)
 

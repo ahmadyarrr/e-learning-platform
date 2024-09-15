@@ -18,6 +18,18 @@
 {%endblock%}
 {%block body%}
 <h1 style="text-align: center;margin-top: 4%;margin-bottom: 2%;">Sign Up</h1>
+{% if form.errors %}
+    <div class="container d-flex justify-content-center text-danger">
+      {% for field in form  %}
+            {% for error in field.errors  %}
+                {{error}}
+                <br>
+            {% endfor %}
+      {% endfor %}
+      <br>
+      <br>
+    </div>
+  {% endif %}
 <div id="signup_content" style="width: 30%; box-shadow: 1px 1px 6px 6px lightgray;padding: 2%;" class="container d-flex justify-content-center" >
     <form  method="post" enctype="multipart/form-data" acction="{%url 'students:register'%}">
     {%csrf_token%}

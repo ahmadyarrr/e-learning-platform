@@ -15,6 +15,7 @@ from students.forms import StduentSignUpCustomForm
 from students.models import StudentProfile
 from django.views.generic.base import TemplateResponseMixin
 from django.contrib.auth import login
+from django.utils.safestring import mark_safe
 # Create your views here.
 
 
@@ -34,10 +35,13 @@ class RegisterStudentView(SignupView, TemplateResponseMixin):
             StudentProfile.objects.create(
                 image=data["image"], phone=data["phone"], user=user
             )
+            students_group = Group.objects.get(name="Students")
+            user.groups.add(students_group)
             # logging the user in
             login(request,user)
         else:
-            return self.render_to_response({"form": form, "errors": form.errors})
+            print("form invalid")
+            return self.render_to_response({"form": form})
 
         return redirect('students:student_course_list')
 

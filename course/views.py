@@ -17,13 +17,13 @@ from .forms import ModuleForm
 from .models import Content, Course, Module, Subject
 from django.shortcuts import get_object_or_404
 from django.http.response import JsonResponse
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from .mixins import (
     InstructorCourseMixin,
     InstructorCourseEditMixin,
     authenMixin,
 )
-
+from django.http import HttpResponse
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
 
@@ -47,14 +47,7 @@ class SubjectManage(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return qs
 
 
-class SubjectCreateUpdateView(
-    LoginRequiredMixin,
-    PermissionRequiredMixin,
-    View,
-    TemplateResponseMixin,
-):
-    permission_required = "course.managers_access"
-    permission_denied_message = "only managers can change"
+class SubjectCreateUpdateView(LoginRequiredMixin,TemplateResponseMixin, View    ):
     obj = None
     model = Subject
     template_name = "subjects/create_update.html"
@@ -64,17 +57,20 @@ class SubjectCreateUpdateView(
         return form(*args, **kwargs)
 
     def dispatch(self, request, id=None, *args, **kwargs):
-        # print(type(super(self)),getattr(super(LoginRequiredMixin,self),'dispatch'),"-+_+_+_+_+_+_+_+")
-        # print(type(super(View,self)),getattr(super(View,self),'dispatch'),"-+_+_+_+_+_+_+_+")
-        # print(type(super(PermissionRequiredMixin,self)),getattr(super(PermissionRequiredMixin,self),'dispatch'),"-+_+_+_+_+_+_+_+")
-
-        permission_response = super(PermissionRequiredMixin, self).dispatch(
-            request, id, *args, **kwargs
+        is_authenticated = request.user.is_authenticated
+        permission_response = (
+            True if request.user.has_perm("course.managers_access") else False
         )
-        if permission_response:
+        if not is_authenticated:
+            logine_url = reverse("account_login")
+            this_view = reverse("create_update_subject")
+            return redirect(f"{logine_url}?next={this_view}")
+        if is_authenticated & permission_response:
             if id:
                 self.obj = get_object_or_404(self.model, id=id)
             return super().dispatch(request, id, *args, **kwargs)
+        else:
+            return HttpResponse("(: PERMISSION DENIED :)")
 
     def get(self, request, id=None):
         subject_form = self.get_form(instance=self.obj)
@@ -86,6 +82,7 @@ class SubjectCreateUpdateView(
         )
         if form.is_valid():
             # create new object
+            print(Subject.objects.all())
             instance = form.save(commit=False)
             instance.owner = self.request.user
             instance.slug = slugify(instance.title)
