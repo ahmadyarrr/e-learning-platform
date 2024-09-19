@@ -24,7 +24,7 @@ class Subject(models.Model):
 
     def __str__(self) -> str:
 
-        return "Subject {}.".format(self.title)
+        return self.title
 
 
 class Course(models.Model):
@@ -41,7 +41,7 @@ class Course(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     overview = models.TextField()
-    image = models.ImageField(upload_to="course/cover", null=True, blank=True)
+    image = models.ImageField(upload_to="course/covers")
     overview_video = models.FileField(
         upload_to="course/overview", null=True, blank=True
     )

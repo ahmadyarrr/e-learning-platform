@@ -21,12 +21,12 @@ class InstructorCourseMixin(InstructorMixin,
                             LoginRequiredMixin):
     # supplies all remaining parts for a course
     model = Course
-    fields = ["subject","title","slug","overview"]
+    fields = ["subject","title","slug","image","overview"]
     success_url = reverse_lazy("course:manage_course_view")
     
 # 4 template supplier for create and update
 class InstructorCourseEditMixin(InstructorCourseMixin,InstructorEditMixin):
-    template_name=  "courses/manage/course/c_e_form.html"
+    template_name =  "courses/manage/course/c_e_form.html"
     
 class authenMixin:
     def __init__(self) -> None:

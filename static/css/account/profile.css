@@ -17,7 +17,7 @@
 }
 
 #username {
-    margin-top: 4%;
+    margin-top: 3%;
 }
 
 #profile-title {
@@ -27,7 +27,7 @@
     margin-left: 0;
 }
 
-#whole{
+#whole{     
     display: flex;
     flex-direction: row;
 

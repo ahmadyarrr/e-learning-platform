@@ -23,7 +23,7 @@ from .mixins import (
     InstructorCourseEditMixin,
     authenMixin,
 )
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
 
@@ -122,6 +122,17 @@ class CourseManageView(InstructorCourseMixin, ListView):
 class CourseCreateView(InstructorCourseEditMixin, CreateView):
     permission_required = "course.add_course"
 
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        print("dispatch")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        print("form valid")
+        return super().form_valid(form)
+    
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        # we can call self.get_form() to get the current instance of form and see errors
+        return super().post(request, *args, **kwargs)
 
 class CourseUpdateView(InstructorCourseEditMixin, UpdateView):
     permission_required = "course.change_course"
@@ -296,6 +307,7 @@ class ViewCourses(View, TemplateResponseMixin):
 
     def get(self, request, subject=None, *args, **kwargs):
         subjects = cache.get("all_subjects")
+        subjects = Subject.objects.all()
         if not subjects:
             subjects = Subject.objects.all().annotate(count_course=Count("courses"))
             cache.set("all_subjects", subjects)

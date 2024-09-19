@@ -26,3 +26,15 @@ class AccessChatView(View,LoginRequiredMixin,TemplateResponseMixin):
         
         return self.render_to_response({'course':self.course})
         
+class AccessCallView(View,LoginRequiredMixin,TemplateResponseMixin):
+    course = None
+    template_name = "chat/call.html"
+    
+    def get(self,request,course_id,*args, **kwargs):
+        try:
+            self.course = request.user.enrolled_courses.get(id=course_id)
+        except:
+            return HttpResponseForbidden('Forbiden')
+        
+        return self.render_to_response({'course':self.course})
+            

@@ -1,9 +1,10 @@
 <div id="header" class="d-flex" >
-  <h1 id="course_title"><a href="/" class="container flex-column justify-content-left text-primary mb-0">Educa</a></h1>
+  <h1 id="course_title"><a href="/" class="container flex-column justify-content-left">Educa</a></h1>
   <div id="account">
     {% if user.is_authenticated %}
       <div class="dropdown">
         <a href="{%url '_account:show_profile'%}"><img src="{{user_profile.image.url}} "></a>
+        <strong>Welcome! {{user.username}}</strong>
         <div class="dropdown-content">
             <a href="{%url '_account:show_profile'%}">
               Profile

@@ -21,19 +21,20 @@ li {
   margin-left: 30%;
   margin-bottom: 0;
   padding: 0;
+  color: #f1f1f1;
 }
 
 #header {
   zoom: 90%;
-  background-color: aliceblue;
+  background-color: rgb(39, 192, 82);
   display: block;
-  border-bottom: 4px solid yellowgreen;
+  border-bottom: 4px solid rgb(27, 225, 243);
   margin-bottom: 10px;
 }
 
 #account {
   /* margin-top: 0.5%; */
-  margin-left: 77%;
+  margin-left: 73%;
   border: 6px;
 }
 
@@ -46,9 +47,10 @@ li {
 }
 
 .dropdown {
-  margin-top: 10%;
+  margin-top: 5%;
   position: relative;
   display: inline-block;
+  padding-bottom: 3%;
 }
 
 .dropdown-button {

@@ -1,6 +1,7 @@
 from django import forms
 from allauth.account.forms import SignupForm
 from course.models import Course
+from students.models import StudentProfile
 
 class enroll_to_course_form(forms.Form):
     course = forms.ModelChoiceField(queryset=\
@@ -13,4 +14,8 @@ class StduentSignUpCustomForm(SignupForm):
     phone = forms.CharField(max_length=10)
     
     
+class StudentProfileForm(forms.ModelForm):
+    class Meta:
+        model = StudentProfile
+        exclude=['user',"image"]
     
