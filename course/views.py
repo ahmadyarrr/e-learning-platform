@@ -98,7 +98,7 @@ class CourseDetail(DetailView):
     template_name = "courses/course/public_course_detail.html"
     model = Course
     context_object_name = "object"
-
+    
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["enroll_form"] = enroll_to_course_form(
@@ -345,6 +345,7 @@ class courseEnrollView(FormView, LoginRequiredMixin):
         # form valid always should return an httpResponse, the form is validated and data are available here
         self.course = form.cleaned_data["course"]
         self.course.students.add(self.request.user)
+        print(self.course.students.all())
         return super().form_valid(form)
 
     def get_success_url(self) -> str:

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'instructors.apps.InstructorsConfig',
     "chat",
     "rest_framework",
+    "rest_framework.authtoken",
     "debug_toolbar",
     "embed_video",
     "students.apps.StudentsConfig",
@@ -171,7 +172,7 @@ REST_FRAMEWORK = {
     # setting the defualt permissions system
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFUALT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.BasicAuthentication"
+        "rest_framework.authentication.TokenAuthentication"
     ],
     # setting the default renderer
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],

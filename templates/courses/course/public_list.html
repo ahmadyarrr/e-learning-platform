@@ -21,11 +21,12 @@
           {% for course in sub.courses.all %}
             {% with subject=course.subject %}
               <div id="item">
-                <a href="{% url 'course:course_detail' course.slug %}">
+                
+                <a href="{%if not course.modules.count == 0 %}{% url 'course:course_detail' course.slug %}{%else%}{%endif%}">
                     <img src="{{ course.image.url }}" alt="ٔcourse-{{ course.title }}-image" class="slider-img" />
                     <strong>{{ course.title }}</strong>
                 </a>
-                <p>{{ course.count_module }} modules.</p>
+                <p>{{ course.modules.count }} modules.</p>
                 <a href="#">
                     <p>Instructor: {{ course.instructor.username }}</p>
                 </a>

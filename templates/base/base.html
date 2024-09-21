@@ -31,7 +31,7 @@
                 {%block domeready%}{%endblock%}
             })
     </script>
-    <script>
+    {% comment %} <script>
       document.addEventListener('DOMContentLoaded', function() {
       let dropdownButton = document.querySelector('.dropdown-button');
       let dropdownContent = document.querySelector('.dropdown-content');
@@ -47,6 +47,6 @@
           }
       });
   });
-      </script>
+      </script> {% endcomment %}
   </body>
 </html>

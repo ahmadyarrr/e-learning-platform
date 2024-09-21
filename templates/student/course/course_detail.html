@@ -5,8 +5,9 @@
 {% block body %}
     <!--module title-->
     <h1>
-        {{ module.title }}
+        {{ object.title }}
     </h1>
+    <p style="text-align: right;"><a class="btn btn-primary" style="margin-right: 10%;" href="{%url 'chat:course_chatroom' object.id%}">Join Chatroom</a></p>
     <!--modules of this course-->
     <div class="contents">
         <h3>Modules</h3>

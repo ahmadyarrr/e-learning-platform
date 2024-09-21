@@ -2,110 +2,14 @@
 {%block title%}
     group_call
 {%endblock%}
-{%block include_js%}
-    {{course.id|json_script:'course-id'}}
-    {{request.user.username|json_script:'username'}}
+{%load static%}
+{%block head%}
 {%endblock%}
 {%block body%}
     <h1>Video Conference</h1>
     <div id = "videos"></div>
-
-    <script>
-        window.addEventListener("DOMContentLoaded",(event)=>{
-        console.log('dom ready -----')
-            // getting the course id and username and creating a websocket object
-        const course_id  = JSON.parse(document.getElementById('course-id').textContent)
-        const username = JSON.parse(document.getElementById('username').textContent)
-        const url = "ws://"+window.location.host+"/ws/call/room/"+course_id+"/"
-        const websoc = new WebSocket(url)
-    // creating a video element and customizing it and append it to videos container
-        const video_element = document.createElement('video')
-        video_element.autoplay = true;
-        document.getElementById('videos').appendChild(video_element)
-    
-        let local_stream;
-        let peers = {};
-        
-        async function start_video(){
-            local_stream = await navigator.mediaDevices.getUserMedia({
-                'video':true,
-                'audio':true
-            });
-            video_element.srcObject = local_stream
-            // notifying the server to start the video  call
-            websoc.send(JSON.stringify({"offer":true}));
-        
-        }
-        websoc.onmessage = async (event) => {
-            const data = JSON.parse(event.data)
-            if (data.type == 'user_joined'){
-                createPeerConnection(data.user)
-            }
-            else if (data.type == 'offer'){
-                await handleOffer(data);
-            }
-            else if (data.type == 'candidate'){
-                await handleCandidate(data)
-            }
-            else if (data.type == 'answer'){
-                await handlAnswer(data)
-            }
-        };
-
-        async function createPeerConnection(user){
-            const rtc_connect = new RTCPeerConnection();
-            peers[user] = rtc_connect;
-
-            local_stream.getTracks().forEach(track => rtc_connect.addTrack(track,local_stream))
-            
-            // handling any tracks(audio,video) comming from other side + adding the other side video to vides container
-            rtc_connect.ontrack = (event)=>{
-                const pair_video = document.createElement('video');
-                pair_video.autoplay =true;
-                pair_video.srcObject = event.streams[0];
-                document.getElementById('videos').appendChild(pair_video)
-            }
-
-            // getting the candidate paths and sending it to group when came 
-            rtc_connect.onicecandidate = (event) => {
-                if (event.candidate){
-                    websoc.send(JSON.stringify({'candidate':event.candidate,'user':user}))
-                }
-            };
-            
-            // creating an offer to callee, this is executed first, since there are no tracks, and candidates
-            const offer = await rtc_connect.createOffer();
-            await rtc_connect.setLocalDescription(offer);
-            websoc.send(JSON.stringify({'offer':offer,'user':user}))
-            return rtc_connect
-        }
-
-        async function handleOffer(data){
-            // creating a peer connection, when an offer comes
-            const rtc_connect = createPeerConnection(data.user);
-            await rtc_connect.setRemoteDescription(new RTCSessionDescription(data.offer))
-            
-            // sending the answer back accoding to offer
-            const answer = await rtc_connect.createAnswer()
-            await rtc_connect.setLocalDescription(answer)
-            websoc.send(JSON.stringify({'answer':answer,'user':data.user}))
-        }
-
-        async function handlAnswer(data){
-            const rtc_connect  = peers[data.user]
-            await rtc_connect.setRemoteDescription(new RTCSessionDescription(data.answer));
-
-        }
-
-        async function handleCandidate(data){
-            const rtc_connect = peers[data.user];
-            await rtc_connect.addIceCandidate(new RTCIceCandidate(data.candidate));
-
-        }
-        start()
-        
-        })
-    
-    </script>
+    {{course.id|json_script:'course-id'}}
+    {{request.user.username|json_script:'username'}}
+    <script src="{% static 'js/call.js' %}"></script>    
 
 {%endblock%}

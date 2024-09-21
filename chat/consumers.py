@@ -52,9 +52,11 @@ class CallConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         # setting the group name
-        self.room_group_name = "video_call"
+        self.room_name = self.scope['url_route']['course_id']
+        self.room_group_name = f"call_{self.room_name}"
         # adding the user to active users
         self.active_users.add(self.channel_name)
+        
         # adding the user to the group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
@@ -66,6 +68,7 @@ class CallConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         # removing the user from active users set
+        print('disconnect from server....')
         self.active_users.remove(self.channel_name)
 
         self.channel_layer.group_discard(self.room_group_name, self.channel_name)
@@ -77,7 +80,6 @@ class CallConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
-    
         if "offer" in data:
             self.channel_layer.group_send(
                 self.room_group_name,
@@ -100,16 +102,21 @@ class CallConsumer(AsyncWebsocketConsumer):
             )
 
     async def user_joined(self, event):
+        print('user joined called on server')
         await self.send(
             text_data=json.dumps({"type": "user_joined", "user": event["user"]})
         )
 
     async def user_left(self, event):
+        print('user left called on server')
+        
         await self.send(
             text_data=json.dumps({"type": "user_left", "user": event["user"]})
         )
 
     async def offer(self, event):
+        print('offer called on server')
+
         await self.send(
             text_data=json.dumps(
                 {"type": "offer", "offer": event["offer"], "user": event["user"]}
@@ -117,6 +124,7 @@ class CallConsumer(AsyncWebsocketConsumer):
         )
 
     async def candidate(self, event):
+        print('candidate called on server')
         await self.send(
             text_data=json.dumps(
                 {
@@ -128,7 +136,8 @@ class CallConsumer(AsyncWebsocketConsumer):
         )
 
     async def answer(self, event):
-        await self.send(
+        print('answer called on server')
+        await self.send( 
             text_data=json.dumps(
                 {"type": "answer", "answer": event["answer"], "user": event["user"]}
             )

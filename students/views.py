@@ -90,7 +90,7 @@ class StudentCourseList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
 
 
 class StudentCourseDetail(DetailView, LoginRequiredMixin):
-    template_name = "student/course/detail.html"
+    template_name = "student/course/course_detail.html"
     model = Course
 
     def get_queryset(self):
