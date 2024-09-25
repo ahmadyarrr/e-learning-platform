@@ -1,11 +1,40 @@
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 import json
 from asgiref.sync import async_to_sync
-from django.utils.timezone import now
+import time
+from educa.settings import REDIS_DB_HOST,REDIS_DB_NAME, REDIS_DB_PORT
+import redis
 
 """
     Note: self.scope returns all data about the socket connection
 """
+
+redis_client = redis.Redis(host=REDIS_DB_HOST,
+                           port=REDIS_DB_PORT,
+                           db=REDIS_DB_NAME)
+
+def get_messages(course_id):
+    key = f"mes_c{course_id}"
+    messages = json.loads(redis_client.get(key) or b'{}')
+    return messages
+    
+def delete_message(course_id,m_id,sender_id):
+    messages = get_messages(course_id,sender_id)
+    message_key = f"message_#{m_id}"
+    
+    if  message_key in messages.keys():
+        del messages[f"message_#{m_id}"]
+        redis_client.set(message_key,json.dumps(messages))
+    return 0
+
+def save_message(message,course_id,ntime,sender_id,sender_name):
+    key = f"mes_c{course_id}"
+    message = {'message':message,'sender_id':sender_id,'sender':sender_name,'time':ntime,'cid':course_id}
+    messages = get_messages(course_id) or {} 
+    print("messages--0-0-0-0",messages)
+    messages[f'message_#{messages.__len__()}'] = message    
+    redis_client.set(key,json.dumps(messages))
+    
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -26,24 +55,30 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def receive(self, text_data=None, bytes_data=None):
+        
         if text_data:
             data = json.loads(text_data)
-            message = data["message"]
-            print("message received:", message)
-            # self.send(text_data=json.dumps({"typee": "message", "message": message}))
-            # sending the message to the whole group members
-            async_to_sync(self.channel_layer.group_send)(
-                self.course_group_name,
-                {
-                    "type": "chat_message",
-                    "message": message,
-                    "sender": self.user.username,
-                    "time": now().isoformat(),
-                },
-            )
+            message = data.get("message",None)
+            
+            if message:
+                print("message received:", message)
+                nano_time = data.get("nano_time")
+                sender_id = self.user.id
+                sender_name = self.user.username
+                course_id = self.course_id
+                save_message(message,course_id,nano_time,sender_id,sender_name)
+                
+                async_to_sync(self.channel_layer.group_send)(
+                    self.course_group_name,
+                    {
+                        "type": "chat_message",
+                        "message": message,
+                        "sender": sender_name,
+                        "time": nano_time
+                    },
+                )
 
     def chat_message(self, event):
-        print(event, "=----event valu in chat_message")
         self.send(text_data=json.dumps(event))
 
 

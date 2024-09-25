@@ -8,55 +8,174 @@
 {%endblock%}
 {% block body %}
   <div id="chat"></div>
-  
+  <div id="chat-container">
   <div class="rightside">
         <div class="header">
                <div class="imgtext">
-                <div class="userimg">
-                    <img src="{{course.image.url}}" class="cover">
-                </div>
-                <h4>{{course.title}} <br> <span>tap here for group info</span></h4>
+                  <div class="userimg">
+                      <img src="{{course.image.url}}" class="cover">
+                  </div>
+                  <h4>{{course.title}} <br> <span>tap here for group info</span></h4>
                </div>
                 <ul class="nav_icons">
                     <li><img src="search.png" alt=""></li>
                     <li> <img src="dot.png" alt=""></li>
                 </ul>
-            </div>
-            <!----Chat Box---->
-            <div id="messages">
-                <div class="message frnd">
-                    <p>Hi <br> <span>5:41 pm</span></p>
-                </div>  
-                <div class="message mine">
-                  <p>Lorem. <br> <span>6:17 pm</span></p>
-                </div>
+      </div>
+      <!----Chat Box---->
+      <ul id="messages">
 
-            </div>
+      </ul>
             <!----Chat input---->
-            <form id="chat-form">
+            <form id="chat-form" >
               <div id="chat-input">
+                <input name="sender" id="sender" type="hidden" value="{{request.user.id}}">
                 <input name="message" id="chat-message-input" placeholder="Type a message" type="text" />
                 <input  id="chat-message-submit" type="submit" value="Send" />
               </div>
             <form>
-        </div>
+  </div>
+  </div>
 <script>
-  window.addEventListener("DOMContentLoaded", function(event){
-                // getting course id
+
+  function nano_to_iso(ntime){
+    const milli_seconds = ntime / 1_000_000
+    const date = Date(milli_seconds)
+    const iso_date = date
+    return iso_date
+  }
+
+  
+  function addMessage(course_id,value,sender_id,sender_name,ntime){
+      var messages = JSON.parse(localStorage.getItem(`mes_c${course_id}_s${sender_id}`)) || [] 
+      const new_message = {
+        id:messages.length,
+        content: value,
+        sender_id:sender_id,
+        sender: sender_name,
+        course:course_id,
+        time: nano_to_iso(ntime)
+      }
+      messages.push(new_message)
+      localStorage.setItem(`mes_c${course_id}_s${sender_id}`,JSON.stringify(messages))
+
+  }
+
+  function delMessage(course_id,m_id,sender_id){
+    var messages = localStorage.getItem(`mes_c${course_id}_s${sender_id}`) || []
+    if (messages !== []){
+      const  messages = messages.filter(mess => mess.id !== m_id)
+      localStorage.setItem(`mes_c${course_id}_s${sender_id}`,JSON.stringify(messages))
+    }
+  }
+
+  function getMessagesLocalSt(course_id,sender_id){
+    const messages = JSON.parse(localStorage.getItem(`mes_c${course_id}_s${sender_id}`)) || []
+    if (messages !==[]){
+      return messages
+    }
+    else{
+      return {}  
+    }
+
+  }
+
+  function getCookie(name){
+    let cookieValue = null;
+    if (document.cookie && document.cookie!== ''){
+      const cookies =   document.cookie.split(';')
+      for (let i=0; i<cookies.length; i++){
+        const cookie = cookies[i].trim()
+        if (cookie.substring(0,name.length + 1)===(name+'=')){
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+        }
+      }
+    }
+    return cookieValue
+  }
+
+  
+  
+
+  window.addEventListener("DOMContentLoaded", async function(event){
+      localStorage.clear()
+          // getting course id
           const course_id = JSON.parse(document.getElementById('course-id').textContent);
         
           // getting username
           const request_user = JSON.parse(document.getElementById('request-user').textContent);
 
-          console.log(course_id,request_user)
+          // getting current user id
+          const user_id = JSON.parse(document.getElementById('user-id').textContent);
 
+          // retriving previous messages
+          // taking out messages from local localStorage
+          var last_message_id = 0;
+          const local_messages =  getMessagesLocalSt(course_id,user_id)
+          const date_opts = {'year':'numeric','hour':'numeric','minute':'numeric','hour12':true}
+          // getting the message box element and inserting every message to it 
+          const mess_box = document.getElementById('messages')
+          local_messages.forEach(mess =>{
+
+              const source = mess['sender_id'] === user_id ? 'mine':'frnd'
+              const date = Date(mess.time / 1_000_000) // converting to iso format
+              console.log(date,"date for each local mess")
+              mess_box.innerHTML += `<strong style='color:white;' class='message ${source}'>${mess.sender}</strong><li class="message ${source}">
+                                  <p>${mess.content}. <br> <span>${date}</span></p>
+                                  </li> `
+          })
+
+          last_message_id = local_messages.length
+
+
+
+          let server_messages;
+          const c_id  = parseInt(course_id)
+          const m_id  = parseInt(last_message_id)
+          const get_messages_url = JSON.parse(document.getElementById("get-messages-url").textContent)['url']  
+          const body = JSON.stringify({
+            c_id:c_id,
+            m_id:m_id
+          })
+          const headers = {
+            'Content-Type':'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          }
+          const options = {
+            method:'POST',
+            headers:headers,
+            body:body
+          }
+          fetch(get_messages_url,options).then(response => response.json()).then(messages => {
+            if (messages.error){
+              console.log('there was an error while fetching new messages')
+            }
+            else{
+              server_messages = JSON.parse(messages['messages'])
+              console.log('this is the content from server',server_messages)
+
+              // inserting new messages from server
+              if (server_messages.length !== 0){
+                mess_box.innerHTML += `<h4 style='text-align:center;background-color:black; color: white;'>
+                                        You have some new messages</h4>`
+              }
+              server_messages.forEach(mess =>{
+                  const source = mess['sender_id'] === user_id ? 'mine':'frnd'
+                  const data = mess['message']
+                  const date = new Date(mess.time / 1_000_000)
+                  mess_box.innerHTML += `<strong style='color:white;' class='message ${source}'>${mess.sender}</strong><li class="message ${source}"> 
+                                      <p>${mess.content}. <br> <span>${date}</span></p>
+                                      </li>  `
+                  addMessage(course_id,mess.content,mess['sender_id'],mess.time)
+              })
+                }
+          } )
+          
           // creating the room url for the specific course
           const url = 'ws://'+window.location.host+'/ws/chat/room/'+ course_id + '/';
-          console.log(url);
           
           // creating the WebSocket
           let chatSoc = new WebSocket(url);
-          console.log('connection successful!');
 
           // handling the server's messages; note that it is called everytime a message is sent here
           chatSoc.onmessage = function(e){
@@ -64,40 +183,58 @@
             // e.data refers to the data comming from server-side
             const data = JSON.parse(e.data);
             if (data.type =='chat_message'){
-              
               // determining the date the message has been sent
-              const date_options = {'hour':'numeric','minute':'numeric',hour12:true}
-              const date_sent = new Date(data.time).toLocaleString(date_options)
+              const date_options = {'year':'numeric','hour':'numeric','minute':'numeric','hour12':true}
 
+              const milli_seconds = data.time / 1_000_000
+              const date_sent = Date(milli_seconds) 
+              
               // setting author info
               const sender = data.sender;
               const isMe = sender == request_user;
-              console.log(sender,request_user,isMe,"=====---")
               const name = isMe ? 'Me': sender;
               const source = isMe ? 'mine':'frnd'; // used for left-right direction styling
+              console.log(sender,isMe,name)
 
               // assigning the message box to a variable and adding content
-              const mess = document.getElementById('messages')
-              mess.innerHTML += `<div class="message ${source}">
-                                <p>${data.message}. <br> <span>${date_sent}</span></p>
-                                 </div>  `
+              const mess_box = document.getElementById('messages')
+              if (!isMe){
+                mess_box.innerHTML += `<h4 style='text-align:center;background-color:black; color: white;'>
+                                          You have some new messages</h4>`
+              }
+
+              mess_box.innerHTML += `<strong style='color:white;' class='message ${source}'>${data.sender}</strong><li class="message ${source}">
+                                  <p>${data.message}. <br> <span>${date_sent}</span></p>
+                                  </li>`
               
-            
-              mess.scrollTop = mess.scrollHeight;
-            }
+              mess_box.scrollTop = mess_box.scrollHeight;
+                                }
              
           }
           chatSoc.onclose = function(){
-            console.log('Chat was closed!')
+
+
           }
+
           // sending the message using the form, no by submission
           const form = document.getElementById('chat-form');
-          console.log('got the form',form)
+          
           form.addEventListener('submit', function(e){
+
             e.preventDefault();
+
             let message = e.target.message.value;
+            let sender = e.target.sender.value;
+
+            // getting the time 
+            let now = Date.now()
+            
+            addMessage(course_id,message,sender,request_user,now)
+            // sending the message
             chatSoc.send(JSON.stringify({
               'message':message,
+              'nano_time': now,
+              'sender_id': sender,
             }))
             form.reset();
 
@@ -115,5 +252,9 @@
   {{course.id|json_script:'course-id'}}
   {{time|json_script:'time-data'}}
   {{request.user.username|json_script:'request-user'}}
-{% endblock %}
+  {{request.user.id|json_script:'user-id'}}
+  <script id="get-messages-url" type="application/json"  >
+    {"url":"http://{{request.get_host}}{%url 'chat:get_messages'%}"}
+  </script> 
+  {% endblock %}
 

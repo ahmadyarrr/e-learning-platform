@@ -103,6 +103,10 @@ DATABASES = {
     }
 }
 
+REDIS_DB_NAME = 0
+REDIS_DB_HOST = '127.0.0.1'
+REDIS_DB_PORT = 6379
+
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
