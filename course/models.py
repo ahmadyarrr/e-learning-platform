@@ -4,6 +4,8 @@ from django.template.loader import render_to_string
 from django.contrib.contenttypes.fields import GenericForeignKey
 from .fields import OrderField
 from django.urls import reverse
+from .utils import get_path
+from django.utils.timezone import now
 
 # Create your models here.
 
@@ -48,6 +50,7 @@ class Course(models.Model):
 
     class Meta:
         ordering = ["-created"]
+
 
     def get_absolute_url(self):
         return reverse("course:detail_course", kwargs={"id": self.pk})
@@ -130,3 +133,83 @@ class Video(BaseContent):
 
 class Text(BaseContent):
     text = models.TextField()
+
+
+
+# student productity
+class Test(models.Model):
+    course = models.ForeignKey('course.Course',
+                               on_delete=models.CASCADE,
+                               related_name='related_tests')
+    date = models.DateTimeField(default=now)
+    duration = models.PositiveSmallIntegerField(default=20) # in minutes
+    deadline = models.DateTimeField(default=now)
+    active = models.BooleanField(default=False)
+    
+class TestSection(models.Model):
+    title = models.CharField(max_length=255)
+    test = models.ForeignKey('course.Test',
+                             on_delete=models.CASCADE,
+                             related_name='test_cases')
+    type_option = models.CharField(max_length=20,
+                                 choices=[('four-option','Four Options'),
+                                          ('true-false','True & False')])
+    amount_questions = models.PositiveSmallIntegerField() 
+    
+class TestCase(models.Model):
+    correct_answer = models.PositiveSmallIntegerField(null=True, blank=True)
+    question = models.TextField()
+    
+class Option(models.Model):    
+    test_case = models.ForeignKey('coures.TestCase',
+                                  on_delete=models.CASCADE,
+                                  related_name='options')
+    
+    value = models.CharField(max_length=20)
+    is_answer = models.BooleanField(default=False)
+
+    
+class Score(models.Model):
+    student  = models.ForeignKey('auth.User',
+                                 on_delete=models.CASCADE,
+                                 related_name='st_scores')
+    
+    hw = models.ForeignKey('course.Assignment',
+                            on_delete=models.CASCADE,
+                            related_name='related_scores',
+                            null=True,
+                            blank=True
+                                 )
+    
+    test = models.ForeignKey('course.Test',
+                             on_delete=models.CASCADE,
+                             related_name='related_scores',
+                             null=True,
+                             blank=True)
+    course = models.ForeignKey('course.Course',
+                               on_delete=models.CASCADE,
+                               related_name='related_scores')
+    
+    value = models.FloatField(default=0)
+
+class Assignment(models.Model):
+    student  = models.ForeignKey('auth.User',
+                                 on_delete=models.CASCADE,
+                                 related_name='related_hws')
+    
+    course = models.ForeignKey('course.Course',
+                               on_delete=models.CASCADE,
+                               related_name='related_hws')
+    document = models.FileField(upload_to= get_path)
+    start = models.DateTimeField(default=now)
+    deadline = models.DateTimeField(default=now)
+    
+# will be applied later, it is an action bar
+# class Notification(models.Model):
+#     course = models.ForeignKey('course.Course',
+#                                 on_delete=models.CASCADE,
+#                                 related_name='notifications')
+#     active = models.BooleanField(default=True)
+#     to = models.CharField(max_length=10,hoices=('instructor','student'))
+    
+    

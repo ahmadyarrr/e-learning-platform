@@ -28,7 +28,7 @@
                 </a>
                 <p>{{ course.modules.count }} modules.</p>
                 <a href="#">
-                    <p>Instructor: {{ course.instructor.username }}</p>
+                    <p>Instructor: {%if course.instructor == request.user%}You{%else%}{{ course.instructor.username }}{%endif%}</p>
                 </a>
               </div>
             {% endwith %}

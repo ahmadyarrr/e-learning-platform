@@ -1,28 +1,31 @@
 {% extends 'base/base.html' %}
+{% load mytags %}
 {% block title %}
   My courses
 {% endblock %}
-{%block head%}
-    <style>
-        a{
-            text-decoration: none;
-        }
-    </style>
-{%endblock%}
+{% block head %}
+  <style>
+    a {
+      text-decoration: none;
+    }
+  </style>
+{% endblock %}
 {% block body %}
   <h1>My courses</h1>
   <div class="module">
     {% for course in courses %}
       <div class="course-info">
         <h3>{{ course.title }}</h3>
-            <p>
-                <a href="{% url 'students:student_course_detail' course.id %}">Access contents</a>
-            </p>
+        <p>
+          <a href="{% url 'students:student_course_detail' course.id %}">Access contents</a>
+        </p>
+          Progress<input type="range" value="{{ courses_averages|get_key_vale:course.id }}" />
+        </p>
       </div>
     {% empty %}
       <p>
         You are not enrolled in any courses yet.
-        <a class="btn btn-primary"  href="{% url 'view_courses' %}">Browse courses</a>
+        <a class="btn btn-primary" href="{% url 'view_courses' %}">Browse courses</a>
         to enroll on a course.
       </p>
     {% endfor %}

@@ -11,4 +11,6 @@ urlpatterns = [
     path("course/<pk>/module/<int:module_id>",views.StudentCourseDetail.as_view(),
         name="student_course_detail_module",
     ),
+    path('addseen/',views.add_seen,name='addseen'),
+    path('getseen/',views.list_seen,name='getseen')
 ]

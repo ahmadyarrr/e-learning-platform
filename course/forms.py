@@ -12,3 +12,8 @@ ModuleForm = inlineformset_factory(
     extra=2,
     can_delete=True
 )
+
+TestForm = inlineformset_factory(
+    Test,
+    TestCase
+)

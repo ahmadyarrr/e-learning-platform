@@ -351,3 +351,5 @@ class courseEnrollView(FormView, LoginRequiredMixin):
     def get_success_url(self) -> str:
         # this method is called by super().form_valid in return redirect HttpResponseRedirect(self.get_success_url)
         return reverse_lazy("students:student_course_detail", args=[self.course.id])
+
+

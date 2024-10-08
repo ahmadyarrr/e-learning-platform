@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block head %}
+  <style>
+    .all {
+      margin-top: 20%%;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid gray;
+      border-right: 1px solid gray;
+    }
+  </style>
+{% endblock %}
+{% block body %}
+  <div class="all">
+    <h2>Lesson `{{ content.item.title }}`</h2>
+    {{ content.item.render }}
+  </div>
+  <!-- js code to handle seen -->
+  <script src="{% static 'js/csrf.js' %}"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function (e) {
+      window.setTimeout(function (e) {
+        /* request prerequsits*/
+        const token = getCookie('csrftoken')
+        console.log('this was the token',token)
+        const url = '{%url 'students:addseen'%}'
+        console.log(url,"this ist he url")
+        const options = {
+            headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': token
+            },
+            body: JSON.stringify({
+                    'c_id': '{{content.id}}',
+                    'm_id': '{{content.module.id}}'
+            }),
+            method:'POST',
+            mode: 'same-origin',
+        }
+
+        console.log('options', options)
+        /* sending request*/
+        fetch(url,options).then(response => response.json()).then(answer =>{
+                        
+        })
+
+      }, 20000)
+    })
+  </script>
+{% endblock %}

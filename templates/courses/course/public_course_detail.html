@@ -22,14 +22,19 @@
       {{ object.description|linebreaks }}
       {% if request.user.is_authenticated %}
         {% if not request.user in object.students.all %}
-          <form method="post" action="{% url 'course:enroll_student' %}">
-            {% csrf_token %}
-            {{ enroll_form.as_p }}
-            <input type="submit" value="Enroll" class="btn btn-primary" />
-          </form>
+          {% if not request.user.instructor_profile %}
+            <form method="post" action="{% url 'course:enroll_student' %}">
+              {% csrf_token %}
+              {{ enroll_form.as_p }}
+              <input type="submit" value="Enroll" class="btn btn-primary" />
+            </form>
+          {% endif %}
         {% else %}
-          <p>You are enrolled in this course</p>
+          {% if not request.user.instructor_profile %}
+            <p>You are enrolled in this course</p>
+          {% endif %}
           <br />
+
           <a class="btn btn-success" href="{% url 'students:student_course_detail' object.id %}">See Modules</a>
         {% endif %}
       {% else %}

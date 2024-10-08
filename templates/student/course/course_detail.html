@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{%load mytags%}
 {% block title %}
     {{ object.title }}
 {% endblock %}
@@ -8,15 +9,19 @@
         {{ object.title }}
     </h1>
     <p style="text-align: right;"><a class="btn btn-primary" style="margin-right: 10%;" href="{%url 'chat:course_chatroom' object.id%}">Join Chatroom</a></p>
+    <h3>Your Progress <input type="range" value="{{course_progress_rate}}"> </h3>
     <!--modules of this course-->
     <div class="contents">
         <h3>Modules</h3>
         <ul id="modules">
             {% for m in object.modules.all %}
                 <li data-id="{{ m.id }}" {% if m == module %}class="selected"{% endif%}>
-                    <a href="{% url "students:student_course_detail_module" object.id m.id %}">
+                    <a href="{% url "course:st_module_content_list" object.id  m.id %}">
                         <span>
                             Module <span class="order">{{ m.order|add:1 }}</span>
+                        </span>
+                        <span>
+                            Progress <input type="range" value="{{modules_seen_rates|get_key_vale:m.id}}">
                         </span>
                         <br>
                         {{ m.title }}
@@ -27,7 +32,7 @@
             {% endfor %}
         </ul>
     </div>
-    <!--module contents-->
+    <!-- contents of the first module of the course as a sample -->
     <div class="module">
         {% for content in module.contents.all %}
             {% with item=content.item %}
