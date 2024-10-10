@@ -14,7 +14,7 @@
                 </a>
                 {%endif%}
                 <a class="btn btn-danger" href="{%url 'course:course_delete' course.id %}">Delete</a>
-            
+                <a href="{%url 'instructors:create_test' course.id %}">Create a Test</a>
             </p>
         </div>
         {%empty%}

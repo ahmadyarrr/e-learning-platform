@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include
 from django.views.decorators.cache import cache_page
-from course.views import CourseDetail, SubjectCreateUpdateView, ViewCourses,SubjectManage
+from course.views import PublicCourseDetail, SubjectCreateUpdateView, ViewCourses,SubjectManage
 
 urlpatterns = [
     

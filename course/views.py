@@ -94,7 +94,7 @@ class SubjectCreateUpdateView(LoginRequiredMixin,TemplateResponseMixin, View    
         )
 
 
-class CourseDetail(DetailView):
+class PublicCourseDetail(DetailView):
     template_name = "courses/course/public_course_detail.html"
     model = Course
     context_object_name = "object"
@@ -111,12 +111,6 @@ class CourseManageView(InstructorCourseMixin, ListView):
     permission_required = "course.view_course"
     permission_denied_message = "You are not allowed to see courses "
     template_name = "courses/manage/course/list.html"
-
-    # model = Course
-    # def get_queryset(self):
-    #     all = super().get_queryset()
-    #     # it should return
-    #     return all.filter(instructor=self.request.user)
 
 
 class CourseCreateView(InstructorCourseEditMixin, CreateView):

@@ -1,0 +1,49 @@
+{%extends 'base/base.html'%}
+{%load static%}
+{%block head%}
+    <link rel="stylesheet" href="{%static 'css/course/create_test.css'%}">
+{%endblock%}
+
+{%block body%}
+    <script src="{% static 'js/csrf.js' %}"></script>
+    <dialog>
+        <h2>Creating a test for course `{{course.title|truncatechars:20}}`</h2>
+        <div id="all-forms">
+            <div class="section" id="section1">
+                <form method="GET"  >
+                    <input  id="title-input" type="text" name="title" value="SECTION TITLE">
+                    <p><span>Four Options</span><span><input value="Four-Option" class="radio" type='radio' name="type_option" ></span>
+                    <p><span>True & False</span><span><input value="True-False" class="radio" type='radio' name="type_option" ></span>
+                    <p>Amount Questions<input class="input-number" name="amount_questions" type="number"></p>
+                </form>
+            </div>
+            <div class="section" id="section2">
+                <button   class="btn btn-success"  id="btn-section2" type="button">Add Section</button>
+                
+            </div>
+            <div class="section"  id="section3">
+                <button class="btn btn-success" id="btn-section3" type="button" onclick="">Add Section</button>
+
+            </div>
+        </div>
+        <div id="other-details">
+                <div>Duration <input class="input-number" type="number" id="duration"> min.</div>
+                <div>Start date <input type="datetime-local" id="start"></div>
+                <div>Deadline <input type="datetime-local" id="deadline"></div>
+        </div>
+        <input type="hidden" value="{{course.id}}" id="course-id">
+        <butto id="create-test-btn" type="button" class="btn btn-primary w-100 "> Create Test </button>
+
+    </dialog>
+    
+    <section id="sections_forms">
+
+    </section>
+    <script src="{%static 'js/create_test.js'%}"></script>
+    
+{%endblock%}
+{%block include_js%}
+    <script type="application/json" id="make-test-url">
+        {{request.get_host}}{%url 'instructors:make_test'%}
+    </script>
+{%endblock%}

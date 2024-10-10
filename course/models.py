@@ -147,24 +147,27 @@ class Test(models.Model):
     active = models.BooleanField(default=False)
     
 class TestSection(models.Model):
-    title = models.CharField(max_length=255)
     test = models.ForeignKey('course.Test',
                              on_delete=models.CASCADE,
-                             related_name='test_cases')
+                             related_name='sections')
+    title = models.CharField(max_length=255)
     type_option = models.CharField(max_length=20,
                                  choices=[('four-option','Four Options'),
                                           ('true-false','True & False')])
     amount_questions = models.PositiveSmallIntegerField() 
     
 class TestCase(models.Model):
+    section = models.ForeignKey('course.TestSection',
+                                on_delete=models.CASCADE,
+                                related_name='test_cases')
+    
     correct_answer = models.PositiveSmallIntegerField(null=True, blank=True)
     question = models.TextField()
     
 class Option(models.Model):    
-    test_case = models.ForeignKey('coures.TestCase',
+    test_case = models.ForeignKey('course.TestCase',
                                   on_delete=models.CASCADE,
                                   related_name='options')
-    
     value = models.CharField(max_length=20)
     is_answer = models.BooleanField(default=False)
 
