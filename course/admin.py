@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Subject,Course,Module,Content,Image,File,Text
+from .models import Subject,Course,Module,Content,Image,File, Test, TestSection,Text, TestCase,Option
 from django.contrib.auth.models import Permission
 # Register your models here.
 
@@ -25,3 +25,7 @@ admin.site.register(Image)
 admin.site.register(File)
 admin.site.register(Text)
 admin.site.register(Permission)
+admin.site.register(TestSection)
+admin.site.register(Test)
+admin.site.register(TestCase)
+admin.site.register(Option)

@@ -100,9 +100,6 @@ class BaseContent(models.Model):
     # this is not a model, but a class
     title = models.CharField(max_length=250)
 
-    instructor = models.ForeignKey(
-        "auth.User", on_delete=models.CASCADE, related_name="%(class)s_related"
-    )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -132,7 +129,7 @@ class Video(BaseContent):
 
 
 class Text(BaseContent):
-    text = models.TextField()
+    value = models.TextField()
 
 
 
@@ -142,18 +139,27 @@ class Test(models.Model):
                                on_delete=models.CASCADE,
                                related_name='related_tests')
     date = models.DateTimeField(default=now)
-    duration = models.PositiveSmallIntegerField(default=20) # in minutes
+duration = models.PositiveSmallIntegerField(default=20) # in minutes
     deadline = models.DateTimeField(default=now)
     active = models.BooleanField(default=False)
+    
+    def is_active(self):
+        """shows whether test is active or not"""
+        pass
+
+    def start_test(self):
+        pass
+    
     
 class TestSection(models.Model):
     test = models.ForeignKey('course.Test',
                              on_delete=models.CASCADE,
                              related_name='sections')
     title = models.CharField(max_length=255)
-    type_option = models.CharField(max_length=20,
-                                 choices=[('four-option','Four Options'),
-                                          ('true-false','True & False')])
+    question_type = models.CharField(max_length=20,
+                                 choices=[('four-option','multiple'),
+                                          ('true-false','True & False'),
+                                          ('declarative',"Declarative")])
     amount_questions = models.PositiveSmallIntegerField() 
     
 class TestCase(models.Model):
@@ -163,6 +169,9 @@ class TestCase(models.Model):
     
     correct_answer = models.PositiveSmallIntegerField(null=True, blank=True)
     question = models.TextField()
+    def __str__(self):
+        return self.question
+    
     
 class Option(models.Model):    
     test_case = models.ForeignKey('course.TestCase',
