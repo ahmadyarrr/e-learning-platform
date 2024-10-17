@@ -139,7 +139,7 @@ class Test(models.Model):
                                on_delete=models.CASCADE,
                                related_name='related_tests')
     date = models.DateTimeField(default=now)
-duration = models.PositiveSmallIntegerField(default=20) # in minutes
+    duration = models.PositiveSmallIntegerField(default=20) # in minutes
     deadline = models.DateTimeField(default=now)
     active = models.BooleanField(default=False)
     
