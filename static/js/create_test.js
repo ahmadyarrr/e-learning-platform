@@ -91,7 +91,6 @@ document.querySelector("dialog").showModal();
     allSections.push(sec1Array, sec2Array, sec3Array);
     const url =
       "http://" + document.getElementById("make-test-url").innerText.trim();
-
     var options = {
       method: "POST",
       headers: {
@@ -105,6 +104,7 @@ document.querySelector("dialog").showModal();
         start_date: document.getElementById("start").value,
         course_id: document.getElementById("course-id").value,
         sections: allSections,
+
       }),
     };
     // starting the http cycle

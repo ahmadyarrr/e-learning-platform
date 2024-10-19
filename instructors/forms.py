@@ -13,7 +13,9 @@ class InstructorRegisterForm(SignupForm):
             'password2': self.fields['password2'],
             'image' : forms.ImageField(),
             'phone' : forms.CharField(max_length=10),
-            'about' : forms.CharField(widget=forms.Textarea)
+            'about' : forms.CharField(widget=forms.Textarea),
+            
+            
         }
         
 

@@ -34,8 +34,14 @@
     <form  method="post" enctype="multipart/form-data" acction="{%url 'instructors:register'%}">
     {%csrf_token%}
     {{form.as_p}}
+
     <input type="submit" class="btn btn-primary"  value="Save">
 </form>
+<script>
+    document.querySelectorAll("form")[0].innerHTML += `
+                <input name="timezone" type="hidden" id="timezone">`
+    document.getElementById("timezone").value = Intl.DateTimeFormat().resolvedOptions().timeZone
+</script>
 </div>
 {% endblock %}
 {%block domeready%}

@@ -7,4 +7,4 @@ class InstructorProfile(models.Model):
     image = models.ImageField(upload_to='images/instructor',null=True,blank=True)
     phone  = models.CharField(max_length=10)
     about = models.TextField(null=True,blank=True)
-    
+    timezone= models.CharField(null=True,blank=True,max_length=50)

@@ -3,15 +3,15 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from allauth.account.views import SignupView
 from django.views.generic.base import TemplateResponseMixin
-from course.forms import create_formset
 from course.models import Course, Test, TestSection, TestCase, Option
 from .models import InstructorProfile
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from .forms import InstructorRegisterForm
 from django.contrib.auth.models import Group
-
-
+from datetime import datetime
+from pytz import timezone as py_timezone
+from pytz import utc
 # Create your views here.
 class InstructorRegisterView(SignupView, TemplateResponseMixin):
     form_class = InstructorRegisterForm
@@ -27,8 +27,10 @@ class InstructorRegisterView(SignupView, TemplateResponseMixin):
             user = form.save(request)
             data = form.cleaned_data
             InstructorProfile.objects.create(
-                image=data["image"], phone=data["phone"], user=user
+                image=data["image"], phone=data["phone"], user=user,
+                timezone= request.POST['timezone']
             )
+            
             # adding user to a group
             instructors_group = Group.objects.get(name="Instructors")
             user.groups.add(instructors_group)
@@ -54,10 +56,13 @@ def create_test_view(request, course_id=None):
         if "meta" in body:
             """this part is for creating test object and its sections"""
             try:
-                meta_data = body["meta"]
                 # creating a test object
+                instructor_tz = py_timezone(request.user.instructor_profile.timezone)
                 course_id, duration = body["course_id"], body["duration"]
-                start_date, deadline = body["start_date"], body["deadline"]
+
+                start_date = instructor_tz.localize(datetime.fromisoformat(body["start_date"])).astimezone(utc)
+                deadline= instructor_tz.localize(datetime.fromisoformat(body["deadline"])).astimezone(utc)
+                print("start date from JS to utc", start_date)
                 course = Course.objects.get(id=course_id)
                 test = Test.objects.get_or_create(
                     course=course,
@@ -68,6 +73,7 @@ def create_test_view(request, course_id=None):
                 )[
                     0
                 ]  # (object, bool) when using get_or_create
+
                 # creating the section objects
                 sections = body["sections"]
                 section_ids = []
@@ -86,9 +92,9 @@ def create_test_view(request, course_id=None):
                         )
                         test_section.save()
                         section_ids.append(test_section.id)
-
                 return JsonResponse({"response": 200,"section_ids":section_ids})
-            except:
+            except Exception as e:
+                print("===",e   )
                 return JsonResponse({"response": 500})
         elif "data" in body:
             """ 
