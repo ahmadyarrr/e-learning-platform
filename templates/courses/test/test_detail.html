@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+{% block body %}
+{%if test.active%}
+  <h1>Ongoing Test `{{ test.title }}`</h1>
+  <p>Start Date: {{ test.date }}</p>
+  <p>End Date: {{ test.deadline }}</p>
+  <p>Duration(mins): {{ test.duration }}</p>
+  <form method="post" action="{% url 'students:join_exam' test.id %}">
+    {% csrf_token %}
+    <input type="submit" value="Join Exam" class="btn btn-primary w-75%" />
+  </form>
+{%else%}
+<h1 style="text-align: center;">This test is no longer active!</h1>
+{%endif%}
+{% endblock %}

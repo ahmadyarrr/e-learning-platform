@@ -9,7 +9,16 @@ def mark_test_active(test_id):
         test = Test.objects.get(id=test_id)
         test.active= True
         test.save()
-        print("test marked as active")
     except Exception as e:
-        print(e.args, "priblew....")
         pass
+
+@shared_task
+def mark_test_inactive(test_id):
+    try:
+        test = Test.objects.get(id=test_id)
+        test.active = False
+        test.save()
+        
+    except:
+        pass
+    

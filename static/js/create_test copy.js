@@ -10,7 +10,7 @@ document.querySelector("dialog").showModal();
   btnSection2.addEventListener("click", function (e) {
     section2.innerHTML = `
                 <form method="GET" id="form-section2" >
-                <input  id="title-input" type="text" name="title" value="SECTION2 TITLE">
+                <input  id="title-input" type="text" name="title" placeholder="SECTION2 TITLE">
                 <p><span>Multiple Choice</span><span><input value="multiple" class="radio" type='radio' name="question_type" ></span>
                 <p><span>True & False</span><span><input value="true-false" class="radio" type='radio' name="question_type" ></span>
                  <p><span>Declarative</span><span><input value="declarative" required class="radio" type='radio' name="question_type" ></span>
@@ -24,7 +24,7 @@ document.querySelector("dialog").showModal();
   btnSection3.addEventListener("click", function (e) {
     section3.innerHTML = `
                 <form method="GET" id="form-section3" >
-                <input  id="title-input" type="text" name="title" value="SECTION2 TITLE">
+                <input  id="title-input" type="text" name="title" placeholder="SECTION2 TITLE">
                 <p><span>Multiple Choice</span><span><input value="multiple" class="radio" type='radio' name="question_type" ></span>
                 <p><span>True & False</span><span><input value="true-false" class="radio" type='radio' name="question_type" ></span>
                  <p><span>Declarative</span><span><input value="declarative" required class="radio" type='radio' name="question_type" ></span>
@@ -51,7 +51,7 @@ document.querySelector("dialog").showModal();
     });
     return arr;
   }
-  const btn = document.getElementById("create-test-btn");
+  const btn = document.getElementById("create-test-btn"); 
   btn.addEventListener("click", function (e) {
     // preparing request url, headers and body
     const sec2 = document.getElementById("form-section2");
@@ -89,6 +89,7 @@ document.querySelector("dialog").showModal();
       },
       body: JSON.stringify({
         meta: "1",
+        test_title:document.getElementById("test_title").value,
         duration: document.getElementById("duration").value,
         deadline: document.getElementById("deadline").value,
         start_date: document.getElementById("start").value,

@@ -132,9 +132,9 @@ class Text(BaseContent):
     value = models.TextField()
 
 
-
 # student productity
 class Test(models.Model):
+    title = models.CharField(max_length=60)
     course = models.ForeignKey('course.Course',
                                on_delete=models.CASCADE,
                                related_name='related_tests')
@@ -143,25 +143,27 @@ class Test(models.Model):
     deadline = models.DateTimeField(default=now)
     active = models.BooleanField(default=False)
     
-    def is_active(self):
-        """shows whether test is active or not"""
-        pass
+    def get_absolute_url(self):
+        return reverse("courses/test/test_detail.html", kwargs={"pk": self.pk})
+    
+    def __str__(self):
+        return "Test "+self.title
 
-    def start_test(self):
-        pass
-    
-    
 class TestSection(models.Model):
     test = models.ForeignKey('course.Test',
                              on_delete=models.CASCADE,
                              related_name='sections')
     title = models.CharField(max_length=255)
-    question_type = models.CharField(max_length=20,
-                                 choices=[('four-option','multiple'),
-                                          ('true-false','True & False'),
-                                          ('declarative',"Declarative")])
+    question_type = models.CharField(
+        max_length=20,
+        choices=[
+            ("multiple","four-option",),
+            ("true-false","True & False",),
+            ("declarative","Declarative",),
+        ],
+    )
     amount_questions = models.PositiveSmallIntegerField() 
-    
+
 class TestCase(models.Model):
     section = models.ForeignKey('course.TestSection',
                                 on_delete=models.CASCADE,
@@ -171,8 +173,8 @@ class TestCase(models.Model):
     question = models.TextField()
     def __str__(self):
         return self.question
-    
-    
+
+
 class Option(models.Model):    
     test_case = models.ForeignKey('course.TestCase',
                                   on_delete=models.CASCADE,
@@ -180,7 +182,7 @@ class Option(models.Model):
     value = models.CharField(max_length=20)
     is_answer = models.BooleanField(default=False)
 
-    
+
 class Score(models.Model):
     student  = models.ForeignKey('auth.User',
                                  on_delete=models.CASCADE,
@@ -215,7 +217,7 @@ class Assignment(models.Model):
     document = models.FileField(upload_to= get_path)
     start = models.DateTimeField(default=now)
     deadline = models.DateTimeField(default=now)
-    
+
 # will be applied later, it is an action bar
 # class Notification(models.Model):
 #     course = models.ForeignKey('course.Course',
@@ -223,5 +225,3 @@ class Assignment(models.Model):
 #                                 related_name='notifications')
 #     active = models.BooleanField(default=True)
 #     to = models.CharField(max_length=10,hoices=('instructor','student'))
-    
-    

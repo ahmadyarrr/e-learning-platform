@@ -12,6 +12,8 @@ from django.contrib.auth.models import Group
 from datetime import datetime
 from pytz import timezone as py_timezone
 from pytz import utc
+from .tasks import mark_test_inactive
+from datetime import timedelta
 # Create your views here.
 class InstructorRegisterView(SignupView, TemplateResponseMixin):
     form_class = InstructorRegisterForm
@@ -46,7 +48,7 @@ def create_test_view(request, course_id=None):
         this view creates test, sections, testcases and option objects
         there are 3 steps:
             1- GET --> dialog for the instructor to insert test meta data
-            2- POST--> receiving meta data and saving course and test section objects
+            2- POST--> receiving meta data and saving test and celery and test section objects
             3- POST--> receiving questions and options
     """
     # handling POST requests
@@ -59,12 +61,13 @@ def create_test_view(request, course_id=None):
                 # creating a test object
                 instructor_tz = py_timezone(request.user.instructor_profile.timezone)
                 course_id, duration = body["course_id"], body["duration"]
-
+                title = body['test_title']
                 start_date = instructor_tz.localize(datetime.fromisoformat(body["start_date"])).astimezone(utc)
                 deadline= instructor_tz.localize(datetime.fromisoformat(body["deadline"])).astimezone(utc)
-                print("start date from JS to utc", start_date)
+
                 course = Course.objects.get(id=course_id)
                 test = Test.objects.get_or_create(
+                    title= title,
                     course=course,
                     duration=duration,
                     date=start_date,
@@ -73,7 +76,12 @@ def create_test_view(request, course_id=None):
                 )[
                     0
                 ]  # (object, bool) when using get_or_create
-
+                # telling celery to inactivate the test
+                delay = (deadline - start_date).total_seconds()
+                if delay > 1:
+                    print('test will be inactive in ', delay/60**2/24,'days')
+                    # mark_test_inactive.apply_async((test.id,),countdown=delay)
+                    mark_test_inactive.apply_async((test.id,),eta=test.deadline)
                 # creating the section objects
                 sections = body["sections"]
                 section_ids = []
@@ -108,15 +116,17 @@ def create_test_view(request, course_id=None):
                 sec_title = sec["section_title"]
                 sec_db_id = sec["section_id"]
                 questions = sec["questions"]
+                print("seciton ",sec_title," -- questions:", len(questions))
                 # print("this is the section id and questions array", sec_db_id, questions)
                 section_obj = TestSection.objects.get(id=sec_db_id)
                 # print("section object found ")
                 # print("reading all related questions of this section")
                 for index, q in enumerate(questions, 1):
                     # print("questoin",q,"index",index)
-                    q_value = questions["q" + str(index)]["question"]
-                    c_answer = questions["q" + str(index)]["c_ans"]
-                    options = questions["q" + str(index)]["options"]
+                    question = questions["q" + str(index)]
+                    q_value = question["question"]
+                    c_answer = question["c_ans"]
+                    options = question["options"]
                     # print(q_value, c_answer, options)
                     test_case_ = TestCase.objects.create(
                         question=q_value, correct_answer=c_answer, section=section_obj
@@ -133,10 +143,20 @@ def create_test_view(request, course_id=None):
     # handling GET requests
     else:
         course = None
+        tz = request.user.instructor_profile.timezone
+        start_half_hour = (datetime.now()+timedelta(hours=0.5)).astimezone(py_timezone(tz)).isoformat() # 
+        an_hour_later = timedelta(hours=1)
+        defualt_deadline = (an_hour_later + datetime.now()).astimezone(py_timezone(tz)).isoformat().split(".")[0]
         try:
             course = Course.objects.get(id=course_id)
         except:
             pass
         return render(
-            request, "courses/course/create_test.html", context={"course": course}
+            request,
+            "courses/course/create_test.html",
+            context={
+                "course": course,
+                "default_start": start_half_hour.split(".")[0],
+                "default_deadline": defualt_deadline,
+            },
         )

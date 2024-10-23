@@ -2,7 +2,7 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth import authenticate, login
@@ -16,6 +16,7 @@ from students.models import StudentProfile
 from django.views.generic.base import TemplateResponseMixin
 from django.contrib.auth import login
 from educa.settings import REDIS_DB_HOST,REDIS_DB_NAME, REDIS_DB_PORT
+from course.models import Test
 import redis, json
 import pickle
 
@@ -116,6 +117,9 @@ class StudentCourseDetail(DetailView, LoginRequiredMixin):
         return query
 
     def get_context_data(self, **kwargs):
+        """
+            adds progress, the first module and any ongoing test
+        """
         context = super().get_context_data(**kwargs)
         course = self.get_object()
         # prerequisits for calculating progress
@@ -132,6 +136,10 @@ class StudentCourseDetail(DetailView, LoginRequiredMixin):
                 m_seen_rates[module.id] = m_seen_rate
         context['modules_seen_rates'] = m_seen_rates # rates of seen of each module in template 
         context['course_progress_rate'] = sum([val for val in m_seen_rates.values()]) / total # the total progress of the course
+        # setting the ongoing test
+        test = Test.objects.filter(active=True,course_id=course.id)
+        if test.exists():
+            context["test"] = test.first()
         # setting the first module of the course 
         if "module_id" in self.kwargs:
             # set the specific module to template
@@ -182,7 +190,7 @@ class ContentDetail(DetailView,LoginRequiredMixin,PermissionRequiredMixin):
         query = super().get_queryset()
         query = query.filter(module=self.kwargs['module_id'])
         return query
-        
+
 
 def add_seen(request):
     """
@@ -222,3 +230,32 @@ def list_seen(request):
         return JsonResponse({'seen':pickle.loads(raw_data)})
     else:
         return JsonResponse({'seen':False})
+
+def join_exam(request,pk=None):
+    """
+        enabling students to join this exam
+    """
+    test = None
+    try: 
+        test = Test.objects.get(id=pk)
+    except:
+        pass
+    if request.method == "POST":    
+        request.user.student_profile.taken_tests.add(test)
+        return render(request,"courses/test/test.html", context={"test": test})
+
+    return render(request,"courses/test/test_detail.html", context={"test": test})
+
+
+
+def save(request):
+    """calculate the score"""
+    try:
+        print(request.POST," posted answers ===")
+        ids = request.POST['test-case-id'] # list of ids of test cases
+        answers = request.POST['']
+    except:
+        pass
+    return render(request,'courses/test/success.html')    
+    
+    

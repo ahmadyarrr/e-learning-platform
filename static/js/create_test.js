@@ -99,12 +99,12 @@ document.querySelector("dialog").showModal();
       },
       body: JSON.stringify({
         meta: "1",
+        test_title: document.getElementById("test_title").value,
         duration: document.getElementById("duration").value,
         deadline: document.getElementById("deadline").value,
         start_date: document.getElementById("start").value,
         course_id: document.getElementById("course-id").value,
         sections: allSections,
-
       }),
     };
     // starting the http cycle

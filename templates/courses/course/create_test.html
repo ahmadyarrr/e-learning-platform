@@ -8,10 +8,11 @@
     <script src="{% static 'js/csrf.js' %}"></script>
     <dialog>
         <h2>Creating a test for course `{{course.title|truncatechars:20}}`</h2>
+        <input type="text"  class="w-100" id="test_title" name="test_title"  placeholder="Test Title">
         <div id="all-forms">
             <div class="section" id="section1">
                 <form method="GET" id="form-section1" >
-                    <input  id="title-input" type="text"  required name="title" value="SECTION TITLE">
+                    <input  id="title-input" type="text"  required name="title" placeholder="SECTION TITLE">
                     <p><span>Multiple Choice</span><span><input value="multiple" required class="radio" type='radio' name="question_type" ></span>
                     <p><span>True & False</span><span><input value="true-false" required class="radio" type='radio' name="question_type" ></span>
                     <p><span>Declarative</span><span><input value="declarative" required class="radio" type='radio' name="question_type" ></span>
@@ -29,8 +30,8 @@
         </div>
         <div id="other-details">
                 <div>Duration <input class="input-number" value="5" type="number" id="duration"> min.</div>
-                <div>Start date <input type="datetime-local" value="2024-10-13T06:06" id="start"></div>
-                <div>Deadline <input type="datetime-local" value="2024-10-13T06:06" id="deadline"></div>
+                <div>Start date <input type="datetime-local" value="{{default_start}}" id="start"></div>
+                <div>Deadline <input type="datetime-local" value="{{default_deadline}}" id="deadline"></div>
         </div>
         <input type="hidden" value="{{course.id}}" id="course-id">
         <butto id="create-test-btn" type="button" class="btn btn-primary w-100 "> Create Test </button>

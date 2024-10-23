@@ -19,4 +19,3 @@ def schedul_test(sender,instance,created,**kwargs):
             mark_test_active.apply_async((test.id,), countdown=delay)
         else:
             pass
-    print("test scheduled")
