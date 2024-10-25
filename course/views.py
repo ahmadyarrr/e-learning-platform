@@ -26,7 +26,6 @@ from .mixins import (
 from django.http import HttpRequest, HttpResponse
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
-from instructors.tasks import mark_all_inactive
 
 
 def slugify(sen):
