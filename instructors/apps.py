@@ -7,5 +7,4 @@ class InstructorsConfig(AppConfig):
     
     def ready(self):
         from . import signals
-        print("signals imoprted...")
         return super().ready()

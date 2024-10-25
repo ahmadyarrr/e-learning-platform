@@ -50,7 +50,6 @@ def personal_details(request):
                     instance=request.user.student_profile
                 )
         elif account_type == "managers":
-            print("-------==---=-=-=-=")
             profile_form = ManagerProfileForm(
                 instance=request.user.manager_profile
         )

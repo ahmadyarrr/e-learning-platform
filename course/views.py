@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.apps import apps
 from django.forms import modelform_factory
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from students.forms import enroll_to_course_form
+from students.forms import EnrollCourseForm
 from .forms import ModuleForm
 from .models import Content, Course, Module, Subject
 from django.shortcuts import get_object_or_404
@@ -26,6 +26,7 @@ from .mixins import (
 from django.http import HttpRequest, HttpResponse
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
+from instructors.tasks import mark_all_inactive
 
 
 def slugify(sen):
@@ -47,7 +48,7 @@ class SubjectManage(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return qs
 
 
-class SubjectCreateUpdateView(LoginRequiredMixin,TemplateResponseMixin, View    ):
+class SubjectCreateUpdateView(LoginRequiredMixin, TemplateResponseMixin, View):
     obj = None
     model = Subject
     template_name = "subjects/create_update.html"
@@ -98,12 +99,10 @@ class PublicCourseDetail(DetailView):
     template_name = "courses/course/public_course_detail.html"
     model = Course
     context_object_name = "object"
-    
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["enroll_form"] = enroll_to_course_form(
-            initial={"course": self.get_object}
-        )
+        context["enroll_form"] = EnrollCourseForm(initial={"course": self.get_object})
         return context
 
 
@@ -119,14 +118,15 @@ class CourseCreateView(InstructorCourseEditMixin, CreateView):
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         print("dispatch")
         return super().dispatch(request, *args, **kwargs)
-    
+
     def form_valid(self, form):
         print("form valid")
         return super().form_valid(form)
-    
+
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         # we can call self.get_form() to get the current instance of form and see errors
         return super().post(request, *args, **kwargs)
+
 
 class CourseUpdateView(InstructorCourseEditMixin, UpdateView):
     permission_required = "course.change_course"
@@ -333,7 +333,7 @@ class ViewCourses(View, TemplateResponseMixin):
 
 class courseEnrollView(FormView, LoginRequiredMixin):
     course = None
-    form_class = enroll_to_course_form
+    form_class = EnrollCourseForm
 
     def form_valid(self, form):
         # form valid always should return an httpResponse, the form is validated and data are available here
@@ -345,5 +345,3 @@ class courseEnrollView(FormView, LoginRequiredMixin):
     def get_success_url(self) -> str:
         # this method is called by super().form_valid in return redirect HttpResponseRedirect(self.get_success_url)
         return reverse_lazy("students:student_course_detail", args=[self.course.id])
-
-

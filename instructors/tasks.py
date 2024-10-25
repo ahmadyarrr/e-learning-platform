@@ -1,5 +1,5 @@
 from celery import shared_task
-
+from django.utils import timezone
 from course.models import Test
 
 
@@ -9,8 +9,9 @@ def mark_test_active(test_id):
         test = Test.objects.get(id=test_id)
         test.active= True
         test.save()
+        return True
     except Exception as e:
-        pass
+        return False
 
 @shared_task
 def mark_test_inactive(test_id):
@@ -18,7 +19,6 @@ def mark_test_inactive(test_id):
         test = Test.objects.get(id=test_id)
         test.active = False
         test.save()
-        
+        return True    
     except:
-        pass
-    
+        return False
