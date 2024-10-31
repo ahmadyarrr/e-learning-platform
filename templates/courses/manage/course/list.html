@@ -1,4 +1,79 @@
 {% extends "base/base.html" %}
+{%block head%}
+<style>
+
+    #content h1 {
+        text-align: center;
+        color: #007bff; /* Primary color for headings */
+        margin-bottom: 30px; /* Spacing below the heading */
+    }
+
+    #content div {
+        margin-bottom: 20px; /* Space between courses */
+        padding: 15px;
+        background-color: #fff; /* White background for course cards */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    }
+
+    #content h3 {
+        margin: 0 0 10px; /* Margin below course titles */
+        font-size: 1.5em; /* Larger font size for course titles */
+        color: #333; /* Darker color for titles */
+    }
+
+    #content p {
+        margin: 10px 0; /* Margin for the paragraph */
+    }
+
+    #content a.btn {
+        text-decoration: none; /* Remove underline */
+        padding: 10px 15px; /* Padding for buttons */
+        border-radius: 5px; /* Rounded corners for buttons */
+        margin-right: 10px; /* Space between buttons */
+        display: inline-block; /* Align buttons in a row */
+        transition: background-color 0.3s; /* Smooth background color transition */
+    }
+
+    #content .btn-success {
+        background-color: #28a745; /* Green background */
+        color: white; /* White text */
+    }
+
+    #content .btn-success:hover {
+        background-color: #218838; /* Darker green on hover */
+    }
+
+    #content  .btn-info {
+        background-color: #17a2b8; /* Blue background */
+        color: white; /* White text */
+    }
+
+    #content  .btn-info:hover {
+        background-color: #138496; /* Darker blue on hover */
+    }
+
+    #content  .btn-danger {
+        background-color: #dc3545; /* Red background */
+        color: white; /* White text */
+    }
+
+    #content .btn-danger:hover {
+        background-color: #c82333; /* Darker red on hover */
+    }
+
+    @media (max-width: 600px) {
+        h1 {
+            font-size: 1.5em; /* Responsive heading size */
+        }
+
+        a.btn {
+            font-size: 0.9em; /* Responsive button size */
+            padding: 8px 12px; /* Adjust padding for smaller screens */
+        }
+    }
+</style>    
+{%endblock%}
 {%block body%}
     <h1>My Courses</h1>
     <div>
@@ -9,12 +84,12 @@
                 <a class="btn btn-success" href="{%url 'course:course_update' course.id %}">Edit</a>
                 <a class="btn btn-info" href="{%url 'course:module_manage' course.id %}">Edit Modules</a>
                 {%if course.modules.count > 0%}
-                <a href="{%url 'course:module_content_list' course.modules.last.id %}">
+                <a class="btn btn-info" href="{%url 'course:module_content_list' course.modules.last.id %}">
                     Manage Contents
                 </a>
                 {%endif%}
                 <a class="btn btn-danger" href="{%url 'course:course_delete' course.id %}">Delete</a>
-            
+                <a class="btn btn-info" href="{%url 'instructors:create_test' course.id %}">Create a Test</a>
             </p>
         </div>
         {%empty%}

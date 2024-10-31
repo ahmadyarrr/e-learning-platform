@@ -1,25 +1,33 @@
-
-
-
-<div class="d-flex" style="zoom:90%;background-color: aliceblue;display: block; border-bottom:4px solid yellowgreen; margin-bottom: 10px; ">
-  <h1><a href="/" style="text-decoration: none; margin-left: 30%;margin-bottom: 0; padding: 0;" class="container flex-column justify-content-left text-primary mb-0">Educa</a></h1>
-  {% if user.is_authenticated %}
-    <dialog style="margin-top: 10%;background-color: aliceblue;border-radius: 10px;border: 1px solid black;box-shadow: 0px 0px 4px 6px lightblue;">
-      <div class="container d-flex flex-column align-items-center">
-        <h1 class="text text-primary">Are you sure to log out?</h1>
-        <br />
-        <form method="post" action="{% url 'account_logout' %}">
-          {% csrf_token %}
-          {% if redirect_field_value %}
-            <input type="hidden" name="redirect_field_value" value="{{ redirect_field_value }}" />
-          {% endif %}
-          <button class="btn btn-primary"  type="button" onclick="document.querySelector('dialog').close()">Back</button>
-          <input type="submit" class="btn btn-danger" value="Yes!" />
-        </form>
-      </div>
-    </dialog>
-    <button class="btn btn-success mb-2 mt-2 z-10" style="margin-left: 77%;" type="button" onclick="document.querySelector('dialog').showModal()">Logout</button>
-  {% else %}
-    <a class="btn btn-success mb-2 mt-2 z-10" style="margin-left: 80%;margin-top: 1%;" href="{% url 'account_login' %}" class="text-success">Sign in</a>
-  {% endif %}
+<div id="header-main">
+  <h1 id="course-title"><a href="/">Educa</a></h1>
+  <nav id="topnav">
+    <div id="nav-links">
+      {% if request.user.student_profile %}
+        <a id="logo" class="nav-link" href="{% url 'students:student_course_list' %}">My Courses</a>
+      {% elif request.user.instructor_profile %}
+        <a id="logo" class="nav-link" href="{% url 'course:manage_course_view' %}">My Courses</a>
+      {% endif %}
+      {% if request.user.student_profile or request.user.instructor_profile %}
+        <a class="nav-link" href="#">Chatroom</a>
+      {% endif %}
+      <a class="nav-link" href="#">Blog</a>
+      <a class="nav-link" href="#"></a>
+      <a class="nav-link" href="#"></a>
+      <input class="search-input" type="text" placeholder="Search for anything..." />
+    </div>
+    <div id="account">
+      {% if user.is_authenticated %}
+        <div class="dropdown">
+          <a href="{% url '_account:show_profile' %}"><img src="{{ user_profile.image.url }} " /></a>
+          <strong>Welcome! {{ user.username }}</strong>
+          <div class="dropdown-content">
+            <a href="{% url '_account:show_profile' %}">Profile</a>
+            <a href="{% url 'account_logout' %}">Logout</a>
+          </div>
+        </div>
+      {% else %}
+        <a class="btn btn-success mb-2 mt-2 z-10" style="margin-left: 80%;margin-top: 1%;" href="{% url 'account_login' %}" class="text-success">Sign in</a>
+      {% endif %}
+    </div>
+  </nav>
 </div>

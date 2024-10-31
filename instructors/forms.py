@@ -1,5 +1,12 @@
 from django import forms
-from allauth.account.forms import SignupForm
+from allauth.account.forms import SignupForm 
+from django.contrib.auth.models import User
+from instructors.models import InstructorProfile
+
+"""
+    In this code, we have overriden SignupForm of django-allauth to add
+    image, phone and about fileds to the form class
+"""
 
 class InstructorRegisterForm(SignupForm):
     def __init__(self, *args, **kwargs):
@@ -11,5 +18,13 @@ class InstructorRegisterForm(SignupForm):
             'password2': self.fields['password2'],
             'image' : forms.ImageField(),
             'phone' : forms.CharField(max_length=10),
-            'about' : forms.CharField(widget=forms.Textarea)
+            'about' : forms.CharField(widget=forms.Textarea),
+            
+            
         }
+        
+
+class InstructorProfileForm(forms.ModelForm):
+    class Meta:
+        model = InstructorProfile
+        exclude=['user',"image"]

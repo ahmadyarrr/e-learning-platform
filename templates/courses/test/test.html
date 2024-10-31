@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% block body %}
+  {% if test.active %}
+    <h1 style="text-align: center;">{{ test.title }}</h1>
+
+    <b>Test Duration: {{ test.duration }} minute{{ test.duration|pluralize }}</b>
+
+    <div style="justify-items: right;display: flex; flex-direction: row;">
+      <a href="#" class="btn btn-primary" onclick="window.print();">Save Your Answers</a>
+    </div>
+    <div id="timer" style="display: flex;flex-direction: row;">
+      <div id="timer-m">00</div>:<div id="timer-s">00</div>
+    </div>
+    <form class="w-100" method="post" action="{% url 'students:save' %}">
+      {%csrf_token%}
+      {% for section in test.sections.all %}
+        <h3 style="background-color: black;color: white;">Section `{{ section.title }}`</h3>
+        <strong>Questions</strong>
+        {% for test_case in section.test_cases.all %}
+          <p>Q{{ forloop.counter }}</p>
+          <p>{{ test_case.question }}</p>
+          <input type="hidden" name="test-case-id" value="{{test_case.id}}">
+
+          {% if section.question_type == 'declarative' %}
+            <!-- declarative -->
+            <textarea required style="width: 600px;height: 300px;" placeholder="Your answer goes here..." name="answered"></textarea>
+            <br />
+          {% elif section.question_type == 'multiple' %}
+            <!-- multiple option -->
+            {% for option in test_case.options.all %}
+              {{ option.value }}
+              <input type="radio" name="multiple{{ forloop.counter }}" value="{{ forloop.counter }}" />
+            {% endfor %}
+          {% else %}
+            <!-- true false -->
+            {% for option in test_case.options.all %}
+              {{ option.value }}
+              <input required type="radio" name="true-false{{ forloop.counter }}" value="{{ forloop.counter }}" />
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      <input type="submit" class="w-100 btn btn-primary" id="SaveBtn" value="submit" />
+    </form>
+  {% else %}
+    <h1 style="text-align: center;">This test is no longer active!</h1>
+  {% endif %}
+  <dialog id="test-over">
+    <h3 style="text-align: center;">The test time is over...</h3>
+  </dialog>
+
+  <script>
+    /*
+      this part handles the timing of the test
+    */
+    window.addEventListener('DOMContentLoaded', function(){
+      let minute = document.getElementById('timer-m');
+      let seconds = document.getElementById('timer-s')
+      let totalSeconds = {{test.duration}} * 60;
+
+      setInterval(()=>{
+          const remainMinutes = Math.floor(totalSeconds/60);
+          const remainSeconds = Math.floor(totalSeconds%60);
+          minute.innerHTML = remainMinutes;
+          seconds.innerHTML = remainSeconds;
+          if (totalSeconds != 0){
+            totalSeconds -=1;
+          }
+      },1000)
+      window.setTimeout(function(){document.getElementById("test-over").showModal()},parseInt({{test.duration}}*1000*60))
+    
+    })
+    window.onbeforeunload = function(event){
+      const message = "Are you sure?"
+      event.returnValue = message 
+      return message
+    }
+  </script>
+{% endblock %}

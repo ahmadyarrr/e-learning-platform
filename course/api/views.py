@@ -1,5 +1,8 @@
 import rest_framework.generics as rest_views
-
+from rest_framework import views,status
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from rest_framework.response import Response
 from course.api.perms import IsEnrolled
 from .serializers import (
     CourseWithModuleContentSer,
@@ -12,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from user_agents import parse
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
@@ -23,7 +26,21 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from rest_framework.decorators import authentication_classes,permission_classes
 
+class LoginEndpoint(views.APIView):
+    permission_classes = [AllowAny]
+    def post(self,request,*args, **kwargs):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        user =  authenticate(username=username,password=password)
 
+        if user:
+            token,created= Token.objects.get_or_create(user=user)
+            print('token---',token)
+            return Response({"token":token.key},status=status.HTTP_200_OK)
+            
+        return Response({'error':'invalid authentication'})
+            
 class SubjectList(rest_views.ListAPIView):
     """
         this view retrives a group of subject objects

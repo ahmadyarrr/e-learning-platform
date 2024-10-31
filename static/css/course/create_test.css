@@ -1,0 +1,56 @@
+#all-forms {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.section {
+    padding: 10px 10px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.section span {
+    width: 100px;
+
+}
+
+.radio {
+    width: 50%;
+    margin-left: 20%;
+}
+
+dialog {
+    min-width: 80%;
+    padding: 20px 20px;
+    border: 2px solid rgb(240, 179, 179);
+}
+
+#other-details {
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+#other-details div {
+    align-items: center;
+    padding-left: 3%;
+    width: 33%;
+}
+
+h2 {
+    text-align: center;
+    color: cadetblue;
+}
+
+#title-input {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+}   
+.input-number{
+    
+    width: 50%;
+    margin-left: 5%;
+}

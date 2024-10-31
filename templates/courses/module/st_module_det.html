@@ -1,0 +1,66 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block head %}
+  <style>
+    .all {
+      margin-top: 20%%;
+      align-items: center;
+      justify-content: center;
+    }
+    .all li {
+      padding: 4px 6px;
+      border-bottom: 1px solid gray;
+    }
+    .all a {
+      text-decoration: none;
+    }
+  </style>
+{% endblock %}
+{% block body %}
+  <h2>Lessons in module `{{ module.title }}`</h2>
+  <h3>Your Progress</h3>
+  <input type="range" value="{{percent_rate}}">
+  <script src="{% static 'js/csrf.js' %}"></script>
+  <div class="all">
+    <ul>
+      {% for c in module.contents.all %}
+        <li >
+          <a href="{% url 'course:st_content_view' module.course.id module.id c.id %}">{{ c.item.title }}</a>
+        <span id="{{c.id}}" ></span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <!--taking out progress-->
+  <script>
+    window.addEventListener('DOMContentLoaded', function (e) {
+        /* request prerequsits*/
+        const token = getCookie('csrftoken')
+        console.log('this was the token',token)
+        const url = '{%url 'students:getseen'%}'
+        console.log(url,"this ist he url")
+        const options = {
+            headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': token
+            },
+            body: JSON.stringify({
+                    'm_id': '{{module.id}}'
+            }),
+            method:'POST',
+            mode: 'same-origin',
+        }
+
+        console.log('options', options)
+        /* sending request*/
+        fetch(url,options).then(response => response.json()).then(answer =>{
+            const seen = answer.seen
+            seen.forEach(s =>{
+                const item = document.getElementById(''+s)
+                item.innerText = 'seen'
+            })
+        })
+    })
+  </script>
+{% endblock %}

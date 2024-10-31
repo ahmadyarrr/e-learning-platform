@@ -1,4 +1,4 @@
-from .views import CourseViewSet, ModuleViewSet, SubjectViewset
+from .views import CourseViewSet, ModuleViewSet, SubjectViewset,LoginEndpoint
 from django.urls import include, path
 from .views import Device, EnrollView, SubjectList,SubjectDetail,create_module
 from rest_framework.routers import DefaultRouter
@@ -22,7 +22,7 @@ urlpatterns = [
     path('subjects',SubjectList.as_view(),name="subjects_list"),
     path('<int:pk>/subject',SubjectDetail.as_view(),name='specific_subject'),
     path('module/create/',create_module,name="create_module"),
-
+    path("login/", LoginEndpoint.as_view(), name="login"),
     # routers
     path('',include(routs_course.urls)),
     path('',include(routs_module.urls)),

@@ -24,7 +24,7 @@
   </h1>
   <div  class="course-info container d-flex flex-column align-items-center w-50">
     <h3>Course info</h1>
-    <form method="post" style="">
+    <form method="post" enctype="multipart/form-data">
       {{ form.as_p }}
       {% csrf_token %}
       <p>

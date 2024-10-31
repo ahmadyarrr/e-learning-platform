@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'boot/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'boot/css/bootstrap.css' %}" />
     <link rel="stylesheet" href="{% static 'boot/css/bootstrap.grid.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/course/header.css' %}" />
     
     {% block head %}
     {% endblock %}
@@ -31,5 +32,22 @@
                 {%block domeready%}{%endblock%}
             })
     </script>
+    {% comment %} <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      let dropdownButton = document.querySelector('.dropdown-button');
+      let dropdownContent = document.querySelector('.dropdown-content');
+  
+      dropdownButton.addEventListener('click', function(event) {
+          event.stopPropagation();
+          dropdownContent.classList.toggle('show');
+      });
+  
+      document.addEventListener('click', function(event) {
+          if (!dropdownButton.contains(event.target)) {
+              dropdownContent.classList.remove('show');
+          }
+      });
+  });
+      </script> {% endcomment %}
   </body>
 </html>

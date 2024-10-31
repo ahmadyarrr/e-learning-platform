@@ -1,0 +1,25 @@
+.contentss{
+    background-color: black;
+    color: white;
+    width: 20%;
+    margin-top: 1%;
+}
+#all{
+    display: flex;
+}
+.course-list{
+    margin-left: 10%;
+}
+.selected{
+    background-color: white;
+}
+a{
+    text-decoration: none;
+
+}
+#modules span{
+    margin-left: 12%;
+}
+#modules a{
+    color: wheat;
+}

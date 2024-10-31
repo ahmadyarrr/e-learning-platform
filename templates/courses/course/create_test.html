@@ -1,0 +1,55 @@
+{%extends 'base/base.html'%}
+{%load static%}
+{%block head%}
+    <link rel="stylesheet" href="{%static 'css/course/create_test.css'%}">
+{%endblock%}
+
+{%block body%}
+    <script src="{% static 'js/csrf.js' %}"></script>
+    <dialog>
+        <h2>Creating a test for course `{{course.title|truncatechars:20}}`</h2>
+        <input type="text"  class="w-100" id="test_title" name="test_title"  placeholder="Test Title">
+        <div id="all-forms">
+            <div class="section" id="section1">
+                <form method="GET" id="form-section1" >
+                    <input  id="title-input" type="text"  required name="title" placeholder="SECTION TITLE">
+                    <p><span>Multiple Choice</span><span><input value="multiple" required class="radio" type='radio' name="question_type" ></span>
+                    <p><span>True & False</span><span><input value="true-false" required class="radio" type='radio' name="question_type" ></span>
+                    <p><span>Declarative</span><span><input value="declarative" required class="radio" type='radio' name="question_type" ></span>
+                    <p>Amount Questions<input class="input-number" value="12" required name="amount_questions" type="number"></p>
+                </form>
+            </div>
+            <div class="section" id="section2">
+                <button   class="btn btn-success"  id="btn-section2" type="button">Add Section</button>
+                
+            </div>
+            <div class="section"  id="section3">
+                <button class="btn btn-success" id="btn-section3" type="button" onclick="">Add Section</button>
+
+            </div>
+        </div>
+        <div id="other-details">
+                <div>Duration <input class="input-number" value="5" type="number" id="duration"> min.</div>
+                <div>Start date <input type="datetime-local" value="{{default_start}}" id="start"></div>
+                <div>Deadline <input type="datetime-local" value="{{default_deadline}}" id="deadline"></div>
+        </div>
+        <input type="hidden" value="{{course.id}}" id="course-id">
+        <butto id="create-test-btn" type="button" class="btn btn-primary w-100 "> Create Test </button>
+
+    </dialog>
+    
+    <div id="sections" style="padding-bottom: 15px;">
+
+    </div>
+    <script src="{%static 'js/create_test.js'%}"></script>
+    
+{%endblock%}
+{%block include_js%}
+    <script type="application/json" id="make-test-url">
+        {{request.get_host}}{%url 'instructors:make_test'%}
+    </script>
+    <script type="application/json" id="success-redirect">
+        {{request.get_host}}{%url 'course:manage_course_view'%}
+    </script>
+    
+{%endblock%}

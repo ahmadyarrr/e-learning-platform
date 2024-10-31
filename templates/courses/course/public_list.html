@@ -1,94 +1,46 @@
-{% extends "base/base.html" %}
-{%load cache%}
+{% extends 'base/base.html' %}
+{% load cache %}
+{% load static %}
 {% block title %}
-    {% if subject %}
-        {{ subject.title }} courses
-    {% else %}
-        All courses
-    {% endif %}
+  {% if subject %}
+    {{ subject.title }} courses
+  {% else %}
+    All courses
+  {% endif %}
 {% endblock %}
-{%block head%}
-<style>
-    .contentss{
-        background-color: black;
-        color: white;
-        width: 20%;
-        margin-top: 1%;
-    }
-    #all{
-        display: flex;
-    }
-    .module{
-        margin-left: 10%;
-    }
-    .selected{
-        background-color: ;
-    }
-    a{
-        text-decoration: none;
-
-    }
-    #modules span{
-        margin-left: 12%;
-    }
-    #modules a{
-        color: wheat;
-    }
-
-</style>
-{%endblock%}
-
+{% block head %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/course/public_list.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/course/public_list_slider.css' %}" />
+{% endblock %}
 {% block body %}
-    <h1>
-    {% if subject %}
-        {{ subject.title }} courses
-    {% else %}
-        All courses
-    {% endif %}
-    </h1>
-    <div id="all">
-    <div class="contentss">
-        <h3>Subjects</h3>
-        <ul id="modules">
-            <li {% if not subject %}class="selected"{% endif %}>
-                <a href="{% url "view_courses" %}">All</a>
-            </li>
-            <br>
-            {% cache 100 diss %}
-            {% for s in subjects %}
-                <li {% if subject == s %}class="selected"{% endif %}>
-                    <a href="{% url "subject_courses" s.slug %}">
-                        {{ s.title }}
-                        <br>
-                        <span >
-                            {{ s.count_course }} course{{ s.count_course|pluralize }}
-                        </span>
-                    </a>
-                </li>
-                <br>
-            {% endfor %}
-            {%endcache%}
 
-    </ul>
-    </div>
-
-    <div class="module">
-        {% for course in courses %}
+  {% for sub in subjects %}
+    <h1>{{ sub }}</h1>
+    <div class="course-list">
+      <div class="slider">
+        <div class="slider-box">
+          {% for course in sub.courses.all %}
             {% with subject=course.subject %}
-            <h3>
-                <a href="{% url "course_detail" course.slug %}">
-                    {{ course.title }}
+              <div id="item">
+                
+                <a href="{%if not course.modules.count == 0 %}{% url 'course:course_detail' course.slug %}{%else%}{%endif%}">
+                    <img src="{{ course.image.url }}" alt="ٔcourse-{{ course.title }}-image" class="slider-img" />
+                    <strong>{{ course.title }}</strong>
                 </a>
-            </h3>
-                <p>
-                    <a href="{% url "subject_courses" subject.slug %}">
-                        {{ subject }}
-                    </a>.
-                    {{ course.count_module }} modules.
-                    Instructor: {{ course.instructor.username }}
-                </p>
+                <a href="#">
+                    <p>Instructor: {%if course.instructor == request.user%}You{%else%}{{ course.instructor.username }}{%endif%}</p>
+                </a>
+              </div>
             {% endwith %}
-        {% endfor %}
+          {% endfor %}
+        </div>
+
+        <button class="button btn-left"><span>&lt;</span></button>
+        <button class="button btn-right"><span>&gt;</span></button>
+        <script src="{% static 'js/public_list.js' %}"></script>
+
+      </div>
     </div>
-    <div>
+    <br />
+  {% endfor %}
 {% endblock %}

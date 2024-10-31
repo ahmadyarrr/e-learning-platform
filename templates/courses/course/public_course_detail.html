@@ -1,40 +1,45 @@
-{% extends "base/base.html" %}
-{%load account allauth%}
+{% extends 'base/base.html' %}
+{% load account allauth %}
 {% block title %}
-    {{ object.title }}
+  {{ object.title }}
 {% endblock %}
-{%block head%}
-    <style>
-        a{
-            text-decoration: none;
-        }
-    </style>
-{%endblock%}
+{% block head %}
+  <style>
+    a {
+      text-decoration: none;
+    }
+  </style>
+{% endblock %}
 {% block body %}
-    {% with subject=object.subject %}
-        <h1>
-            {{ object.title }}
-        </h1>
-        <div class="module">
-            <h2>Overview</h2>
-            <p>
-                <a href="{% url "subject_courses" subject.slug %}">
-                    {{ subject.title }}
-                </a>.
-                {{ object.modules.count }} modules.
-                Instructor: {{ object.instructor.username }}
-            </p>
-            {{ object.description|linebreaks }}
-            {%if request.user.is_authenticated%}
-                <form method="post" action="{%url 'course:enroll_student'%}">
-                    {%csrf_token%}
-                    {{enroll_form.as_p}}
-                    <input type="submit" value="Enroll" class="btn btn-primary">
-                </form>
+  {% with subject=object.subject %}
+    <h1>{{ object.title }}</h1>
+    <div class="module">
+      <h2>Overview</h2>
+      <p>
+        <a href="{% url 'subject_courses' subject.slug %}">{{ subject.title }}</a>.
+        {{ object.modules.count }} modules. Instructor: {{ object.instructor.username }}
+      </p>
+      {{ object.description|linebreaks }}
+      {% if request.user.is_authenticated %}
+        {% if not request.user in object.students.all %}
+          {% if not request.user.instructor_profile %}
+            <form method="post" action="{% url 'course:enroll_student' %}">
+              {% csrf_token %}
+              {{ enroll_form.as_p }}
+              <input type="submit" value="Enroll" class="btn btn-primary" />
+            </form>
+          {% endif %}
+        {% else %}
+          {% if not request.user.instructor_profile %}
+            <p>You are enrolled in this course</p>
+          {% endif %}
+          <br />
 
-            {%else%}
-            <a class="btn btn-success" href="{%url 'account_login' %}?next={%url 'course_detail' object.slug%}">Login And Enroll</a>
-            {%endif%}
-        </div>
-    {% endwith %}
+          <a class="btn btn-success" href="{% url 'students:student_course_detail' object.id %}">See Modules</a>
+        {% endif %}
+      {% else %}
+        <a class="btn btn-success" href="{% url 'account_login' %}?next={% url 'course:course_detail' object.slug %}">Login And Enroll</a>
+      {% endif %}
+    </div>
+  {% endwith %}
 {% endblock %}

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from course.models import Content, Course, Module, Subject
-
+from rest_framework.fields import ChoiceField
 """
     Qustions:
         1- how to create a foreignKey relation both sides in a many-side's serializer?

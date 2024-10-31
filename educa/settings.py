@@ -32,9 +32,11 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    '_account.apps.AccountConfig',
     'instructors.apps.InstructorsConfig',
     "chat",
     "rest_framework",
+    "rest_framework.authtoken",
     "debug_toolbar",
     "embed_video",
     "students.apps.StudentsConfig",
@@ -82,6 +84,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                '_account.context_processors.get_profile',
             ],
         },
     },
@@ -99,6 +102,10 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+REDIS_DB_NAME = 0
+REDIS_DB_HOST = '127.0.0.1'
+REDIS_DB_PORT = 6379
 
 # CACHES = {
 #     "default": {
@@ -169,7 +176,7 @@ REST_FRAMEWORK = {
     # setting the defualt permissions system
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFUALT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.BasicAuthentication"
+        "rest_framework.authentication.TokenAuthentication"
     ],
     # setting the default renderer
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
@@ -186,3 +193,6 @@ CHANNEL_LAYERS = {
         "CONFIG": {"hosts": [("127.0.0.1", 6379)]},
     }
 }
+
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"

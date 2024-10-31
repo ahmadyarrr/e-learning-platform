@@ -1,0 +1,15 @@
+{%extends 'base/base.html'%}
+{%block title%}
+    group_call
+{%endblock%}
+{%load static%}
+{%block head%}
+{%endblock%}
+{%block body%}
+    <h1>Video Conference</h1>
+    <div id = "videos"></div>
+    {{course.id|json_script:'course-id'}}
+    {{request.user.username|json_script:'username'}}
+    <script src="{% static 'js/call.js' %}"></script>    
+
+{%endblock%}
