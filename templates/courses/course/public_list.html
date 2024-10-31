@@ -13,6 +13,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/course/public_list_slider.css' %}" />
 {% endblock %}
 {% block body %}
+
   {% for sub in subjects %}
     <h1>{{ sub }}</h1>
     <div class="course-list">
@@ -26,7 +27,6 @@
                     <img src="{{ course.image.url }}" alt="ٔcourse-{{ course.title }}-image" class="slider-img" />
                     <strong>{{ course.title }}</strong>
                 </a>
-                <p>{{ course.modules.count }} modules.</p>
                 <a href="#">
                     <p>Instructor: {%if course.instructor == request.user%}You{%else%}{{ course.instructor.username }}{%endif%}</p>
                 </a>

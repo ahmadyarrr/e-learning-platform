@@ -17,27 +17,93 @@ li {
   list-style-type: none;
 }
 
-#course_title a {
+#course-title {
+  width: 20%;
+  height: 50%;
+  margin: auto;
+
+}
+
+#course-title a {
   text-decoration: none;
-  margin-left: 30%;
-  margin-bottom: 0;
-  padding: 0;
+
   color: #f1f1f1;
+  width: 50%;
+  margin-left: 15%;
 }
 
 #header-main {
-  zoom: 90%;
+  display: flex;
   background-color: rgb(39, 192, 82);
-  display: block;
   border-bottom: 4px solid rgb(27, 225, 243);
   margin-bottom: 10px;
 }
 
+#topnav {
+  display: flex;
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+}
+
 #account {
   /* margin-top: 0.5%; */
-  margin-left: 73%;
+  margin-right: 5%;
+  width: 30%;
   border: 6px;
 }
+
+#nav-links {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  height: 50%;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.nav-link {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: large;
+  color: white;
+}
+
+/* search bar*/
+.search-input {
+  width: 35%;
+  /* Full width */
+  max-width: 600px;
+  /* Maximum width */
+  padding: 10px 20px;
+  /* Padding for text */
+  border: 1px solid #ccc;
+  /* Light grey border */
+  border-radius: 30px;
+  /* Rounded corners */
+  font-size: 16px;
+  /* Font size */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow */
+  transition: border-color 0.3s ease;
+  /* Smooth border color transition */
+}
+
+.search-input:focus {
+  outline: none;
+  /* Remove default outline */
+  border-color: #007bff;
+  /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  /* Highlight shadow on focus */
+}
+
+.search-input::placeholder {
+  color: #aaa;
+  /* Placeholder text color */
+  opacity: 1;
+  /* Ensure full opacity */
+}
+
 
 #account dialog {
   margin-top: 10%;

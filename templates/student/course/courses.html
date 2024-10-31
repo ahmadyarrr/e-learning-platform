@@ -4,14 +4,83 @@
   My courses
 {% endblock %}
 {% block head %}
-  <style>
-    a {
-      text-decoration: none;
+<style>
+  a{
+    text-decoration: none;
+  }
+  #content h1 {
+        text-align: center; /* Centered heading */
+        color: #007bff; /* Primary color for headings */
+        margin-bottom: 20px; /* Space below heading */
     }
-  </style>
-{% endblock %}
+
+    .module {
+        max-width: 800px; /* Maximum width for the module */
+        margin: 0 auto; /* Center the module */
+        padding: 20px; /* Padding for the module */
+        background-color: #fff; /* White background for the module */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+
+    .course-info {
+        padding: 15px; /* Padding inside each course info */
+        border-bottom: 1px solid #e0e0e0; /* Bottom border for separation */
+    }
+
+    h3 {
+        margin: 0 0 10px; /* Margin for the course title */
+        color: #333; /* Darker color for titles */
+    }
+
+    p {
+        margin: 5px 0; /* Margin for paragraph */
+    }
+
+    .progress-container {
+        width: 100%; /* Full width */
+        background-color: #e0e0e0; /* Background for progress bar */
+        border-radius: 5px; /* Rounded corners */
+        overflow: hidden; /* Hide overflow */
+        position: relative; /* Position for inner progress */
+        height: 20px; /* Height of the progress bar */
+        margin-top: 10px; /* Space above progress bar */
+    }
+
+    .progress {
+        height: 100%; /* Full height */
+        background-color: #28a745; /* Green for completed progress */
+        width: 0; /* Initial width (will be set by inline style) */
+        transition: width 0.4s ease; /* Smooth transition */
+    }
+
+    .btn-primary {
+        display: inline-block; /* Block for the button */
+        text-decoration: none; /* Remove underline */
+        padding: 10px 15px; /* Padding for button */
+        background-color: #007bff; /* Button background */
+        color: white; /* Button text color */
+        border-radius: 5px; /* Rounded corners */
+        margin-top: 10px; /* Space above button */
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker blue on button hover */
+    }
+
+    @media (max-width: 600px) {
+        .module {
+            padding: 10px; /* Smaller padding on mobile */
+        }
+
+        .btn-primary {
+            padding: 8px 12px; /* Smaller button padding on mobile */
+        }
+    }
+</style>
+{%endblock%}
 {% block body %}
-  <h1>My courses</h1>
+  <h1>My Courses</h1>
   <div class="module">
     {% for course in courses %}
       <div class="course-info">
@@ -19,14 +88,16 @@
         <p>
           <a href="{% url 'students:student_course_detail' course.id %}">Access contents</a>
         </p>
-          Progress<input type="range" value="{{ courses_averages|get_key_vale:course.id }}" />
-        </p>
+        <div class="progress-container">
+          <div class="progress" style="width: {{ courses_averages|get_key_vale:course.id }}%;"></div>
+        </div>
+        <p>Progress: {{ courses_averages|get_key_vale:course.id }}%</p>
       </div>
     {% empty %}
       <p>
         You are not enrolled in any courses yet.
         <a class="btn btn-primary" href="{% url 'view_courses' %}">Browse courses</a>
-        to enroll on a course.
+        to enroll in a course.
       </p>
     {% endfor %}
   </div>

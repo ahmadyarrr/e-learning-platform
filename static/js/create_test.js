@@ -8,6 +8,7 @@ document.querySelector("dialog").showModal();
   var section3 = document.getElementById("section3");
   btnSection3.style.display = "none";
   btnSection2.addEventListener("click", function (e) {
+    
     section2.innerHTML = `
                 <form method="GET" id="form-section2" >
                 <input  id="title-input" type="text" name="title" value="SECTION2 TITLE">
@@ -239,7 +240,7 @@ document.querySelector("dialog").showModal();
               };
               fetch(url,options).then(response => response.json()).then(status =>{
                 if (status['OK']=="yes"){
-                  console.log('saved successfully@')
+                  window.location.href = "http://"+document.getElementById("success-redirect").innerText.trim()
                 }
               })
             });

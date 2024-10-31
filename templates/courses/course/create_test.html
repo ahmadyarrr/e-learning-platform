@@ -48,4 +48,8 @@
     <script type="application/json" id="make-test-url">
         {{request.get_host}}{%url 'instructors:make_test'%}
     </script>
+    <script type="application/json" id="success-redirect">
+        {{request.get_host}}{%url 'course:manage_course_view'%}
+    </script>
+    
 {%endblock%}
