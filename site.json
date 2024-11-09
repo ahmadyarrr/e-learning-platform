@@ -1,0 +1,1404 @@
+[
+{
+  "model": "_account.managerprofile",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "image": "images/manager/bg-01.jpg",
+    "phone": "1223423423",
+    "about": "I am a good person"
+  }
+},
+{
+  "model": "course.subject",
+  "pk": 39,
+  "fields": {
+    "title": "Home and Entertainment",
+    "slug": "Home-and-Entertainment",
+    "owner": 1,
+    "description": "you..."
+  }
+},
+{
+  "model": "course.subject",
+  "pk": 40,
+  "fields": {
+    "title": "Web Development",
+    "slug": "Web-Development",
+    "owner": 1,
+    "description": "Nothing"
+  }
+},
+{
+  "model": "course.subject",
+  "pk": 41,
+  "fields": {
+    "title": "Mobile Engineering",
+    "slug": "Mobile-Engineering",
+    "owner": 1,
+    "description": "Nohting"
+  }
+},
+{
+  "model": "course.subject",
+  "pk": 42,
+  "fields": {
+    "title": "Civil Engineering",
+    "slug": "Civil-Engineering",
+    "owner": 1,
+    "description": "Nothing"
+  }
+},
+{
+  "model": "course.course",
+  "pk": 1,
+  "fields": {
+    "instructor": 20,
+    "subject": 39,
+    "title": "Django",
+    "slug": "django",
+    "created": "2024-09-16T13:08:41.675Z",
+    "overview": "dd",
+    "image": "course/covers/django.png",
+    "overview_video": "",
+    "students": []
+  }
+},
+{
+  "model": "course.course",
+  "pk": 2,
+  "fields": {
+    "instructor": 20,
+    "subject": 42,
+    "title": "Intro Civil",
+    "slug": "intro-civil",
+    "created": "2024-09-16T15:40:53.986Z",
+    "overview": "....",
+    "image": "course/covers/Construction_civil_engineer_technician_and_architect_working.webp",
+    "overview_video": "",
+    "students": [
+      22
+    ]
+  }
+},
+{
+  "model": "course.course",
+  "pk": 3,
+  "fields": {
+    "instructor": 20,
+    "subject": 42,
+    "title": "Mid civil",
+    "slug": "mid-civil",
+    "created": "2024-09-16T15:41:12.541Z",
+    "overview": "ss",
+    "image": "course/covers/Construction_civil_engineer_technician_and_architect_working_9l2eFlT.webp",
+    "overview_video": "",
+    "students": []
+  }
+},
+{
+  "model": "course.course",
+  "pk": 4,
+  "fields": {
+    "instructor": 20,
+    "subject": 42,
+    "title": "Advance Civil",
+    "slug": "ad-civil",
+    "created": "2024-09-16T15:41:40.463Z",
+    "overview": "It is advance",
+    "image": "course/covers/1713671901756.png",
+    "overview_video": "",
+    "students": [
+      22,
+      23,
+      24
+    ]
+  }
+},
+{
+  "model": "course.course",
+  "pk": 5,
+  "fields": {
+    "instructor": 20,
+    "subject": 39,
+    "title": "Families",
+    "slug": "familis",
+    "created": "2024-09-16T15:42:20.688Z",
+    "overview": "You shoul ahve lasjdflkaj",
+    "image": "course/covers/bg-01_r1TzIpt.jpg",
+    "overview_video": "",
+    "students": []
+  }
+},
+{
+  "model": "course.course",
+  "pk": 6,
+  "fields": {
+    "instructor": 20,
+    "subject": 42,
+    "title": "Next to learn",
+    "slug": "next-to-learn",
+    "created": "2024-09-16T15:44:06.378Z",
+    "overview": "ss",
+    "image": "course/covers/civilengineering_hero.webp",
+    "overview_video": "",
+    "students": [
+      20,
+      22,
+      24
+    ]
+  }
+},
+{
+  "model": "course.course",
+  "pk": 7,
+  "fields": {
+    "instructor": 20,
+    "subject": 39,
+    "title": "Games",
+    "slug": "games",
+    "created": "2024-09-16T15:50:06.861Z",
+    "overview": "Nothings",
+    "image": "course/covers/home1.webp",
+    "overview_video": "",
+    "students": [
+      24
+    ]
+  }
+},
+{
+  "model": "course.course",
+  "pk": 8,
+  "fields": {
+    "instructor": 20,
+    "subject": 39,
+    "title": "Music",
+    "slug": "music",
+    "created": "2024-09-16T15:50:29.631Z",
+    "overview": "Nothings",
+    "image": "course/covers/hom2.jpg",
+    "overview_video": "",
+    "students": [
+      24
+    ]
+  }
+},
+{
+  "model": "course.course",
+  "pk": 9,
+  "fields": {
+    "instructor": 20,
+    "subject": 39,
+    "title": "Making a good weekend",
+    "slug": "amdkignasd-adf",
+    "created": "2024-09-16T15:51:03.882Z",
+    "overview": "nothign",
+    "image": "course/covers/home4.png",
+    "overview_video": "",
+    "students": [
+      24
+    ]
+  }
+},
+{
+  "model": "course.course",
+  "pk": 10,
+  "fields": {
+    "instructor": 20,
+    "subject": 39,
+    "title": "Videos",
+    "slug": "videos",
+    "created": "2024-09-16T15:51:24.242Z",
+    "overview": "anasidof",
+    "image": "course/covers/hom3.jpg",
+    "overview_video": "",
+    "students": [
+      24
+    ]
+  }
+},
+{
+  "model": "course.module",
+  "pk": 27,
+  "fields": {
+    "title": "Unit 1",
+    "course": 4,
+    "description": "this unit talks about...",
+    "order": 0
+  }
+},
+{
+  "model": "course.module",
+  "pk": 28,
+  "fields": {
+    "title": "THis one",
+    "course": 9,
+    "description": "See more",
+    "order": 0
+  }
+},
+{
+  "model": "course.module",
+  "pk": 29,
+  "fields": {
+    "title": "Pop Music",
+    "course": 8,
+    "description": "This is a music that ...",
+    "order": 0
+  }
+},
+{
+  "model": "course.module",
+  "pk": 30,
+  "fields": {
+    "title": "Call of Duty",
+    "course": 7,
+    "description": "a good PC game",
+    "order": 0
+  }
+},
+{
+  "model": "course.module",
+  "pk": 31,
+  "fields": {
+    "title": "Nothing to learn",
+    "course": 6,
+    "description": "hahah",
+    "order": 0
+  }
+},
+{
+  "model": "course.module",
+  "pk": 32,
+  "fields": {
+    "title": "Oracle NOt doen",
+    "course": 6,
+    "description": "What to do with oracle",
+    "order": 1
+  }
+},
+{
+  "model": "course.module",
+  "pk": 33,
+  "fields": {
+    "title": "First module",
+    "course": 10,
+    "description": "love....",
+    "order": 0
+  }
+},
+{
+  "model": "course.content",
+  "pk": 11,
+  "fields": {
+    "module": 29,
+    "order": 0,
+    "object_id": 6,
+    "object_ct": 16
+  }
+},
+{
+  "model": "course.content",
+  "pk": 12,
+  "fields": {
+    "module": 29,
+    "order": 1,
+    "object_id": 8,
+    "object_ct": 12
+  }
+},
+{
+  "model": "course.content",
+  "pk": 13,
+  "fields": {
+    "module": 31,
+    "order": 0,
+    "object_id": 9,
+    "object_ct": 12
+  }
+},
+{
+  "model": "course.content",
+  "pk": 14,
+  "fields": {
+    "module": 32,
+    "order": 0,
+    "object_id": 7,
+    "object_ct": 16
+  }
+},
+{
+  "model": "course.image",
+  "pk": 5,
+  "fields": {
+    "title": "TRR",
+    "created": "2024-08-11T06:57:04.083Z",
+    "updated": "2024-08-11T06:57:04.083Z",
+    "image": "images/2024-07-10-174533_g7kMgp6.jpg"
+  }
+},
+{
+  "model": "course.image",
+  "pk": 6,
+  "fields": {
+    "title": "Next2",
+    "created": "2024-10-06T12:43:22.962Z",
+    "updated": "2024-10-06T12:43:22.962Z",
+    "image": "images/Screenshot_from_2024-06-15_07-18-03.png"
+  }
+},
+{
+  "model": "course.image",
+  "pk": 7,
+  "fields": {
+    "title": "That is good.",
+    "created": "2024-10-31T05:46:42.947Z",
+    "updated": "2024-10-31T05:46:42.947Z",
+    "image": "images/assignment.jpeg"
+  }
+},
+{
+  "model": "course.file",
+  "pk": 1,
+  "fields": {
+    "title": "jigar2 jan",
+    "created": "2024-07-19T11:14:12.076Z",
+    "updated": "2024-07-19T11:14:12.076Z",
+    "file": "files/like.txt"
+  }
+},
+{
+  "model": "course.text",
+  "pk": 2,
+  "fields": {
+    "title": "Just broken",
+    "created": "2024-08-01T17:09:11.983Z",
+    "updated": "2024-08-01T17:09:11.983Z",
+    "value": "May change to somebody else\r\n.."
+  }
+},
+{
+  "model": "course.text",
+  "pk": 3,
+  "fields": {
+    "title": "What is wrong?",
+    "created": "2024-08-01T17:09:45.727Z",
+    "updated": "2024-08-01T17:09:45.727Z",
+    "value": "It has been many days I have been trying this, but not working!!"
+  }
+},
+{
+  "model": "course.text",
+  "pk": 4,
+  "fields": {
+    "title": "asfdsadf",
+    "created": "2024-08-03T07:25:40.576Z",
+    "updated": "2024-08-03T07:25:40.576Z",
+    "value": "asdfsafasffsadfasdf"
+  }
+},
+{
+  "model": "course.text",
+  "pk": 5,
+  "fields": {
+    "title": "dffgdffg",
+    "created": "2024-08-03T07:25:46.344Z",
+    "updated": "2024-08-03T07:25:46.344Z",
+    "value": "ertertterrt"
+  }
+},
+{
+  "model": "course.text",
+  "pk": 6,
+  "fields": {
+    "title": "4234",
+    "created": "2024-08-03T07:25:52.874Z",
+    "updated": "2024-08-03T07:25:52.874Z",
+    "value": "234234"
+  }
+},
+{
+  "model": "course.text",
+  "pk": 7,
+  "fields": {
+    "title": "sfsdf",
+    "created": "2024-08-11T06:56:51.468Z",
+    "updated": "2024-08-11T06:56:51.468Z",
+    "value": "qwer35434542345432"
+  }
+},
+{
+  "model": "course.text",
+  "pk": 8,
+  "fields": {
+    "title": "What?",
+    "created": "2024-10-06T12:43:52.945Z",
+    "updated": "2024-10-06T12:43:52.946Z",
+    "value": "in this module, you have got something like what you see this days"
+  }
+},
+{
+  "model": "course.text",
+  "pk": 9,
+  "fields": {
+    "title": "This is a content",
+    "created": "2024-10-06T14:06:44.928Z",
+    "updated": "2024-10-06T14:06:44.928Z",
+    "value": "New cano"
+  }
+},
+{
+  "model": "course.test",
+  "pk": 65,
+  "fields": {
+    "title": "Hello Every one",
+    "course": 10,
+    "date": "2024-10-23T01:46:11Z",
+    "duration": 20,
+    "deadline": "2024-10-23T02:16:11Z",
+    "active": false
+  }
+},
+{
+  "model": "course.test",
+  "pk": 66,
+  "fields": {
+    "title": "Hary up!",
+    "course": 8,
+    "date": "2024-10-23T09:28:13Z",
+    "duration": 3,
+    "deadline": "2024-10-23T09:40:13Z",
+    "active": false
+  }
+},
+{
+  "model": "course.test",
+  "pk": 67,
+  "fields": {
+    "title": "You are the best",
+    "course": 10,
+    "date": "2024-10-31T03:34:34Z",
+    "duration": 2,
+    "deadline": "2024-10-31T04:31:34Z",
+    "active": false
+  }
+},
+{
+  "model": "course.test",
+  "pk": 68,
+  "fields": {
+    "title": "New Test2",
+    "course": 10,
+    "date": "2024-10-31T03:43:28Z",
+    "duration": 4,
+    "deadline": "2024-10-31T04:41:28Z",
+    "active": false
+  }
+},
+{
+  "model": "course.test",
+  "pk": 69,
+  "fields": {
+    "title": "sdfsd",
+    "course": 10,
+    "date": "2024-10-31T04:13:01Z",
+    "duration": 5,
+    "deadline": "2024-10-31T04:43:01Z",
+    "active": false
+  }
+},
+{
+  "model": "course.test",
+  "pk": 70,
+  "fields": {
+    "title": "ggg",
+    "course": 10,
+    "date": "2024-10-31T04:14:00Z",
+    "duration": 5,
+    "deadline": "2024-10-31T04:44:00Z",
+    "active": false
+  }
+},
+{
+  "model": "course.test",
+  "pk": 71,
+  "fields": {
+    "title": "Sime quiz",
+    "course": 10,
+    "date": "2024-11-09T11:16:25Z",
+    "duration": 2,
+    "deadline": "2024-11-09T11:18:25Z",
+    "active": false
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 347,
+  "fields": {
+    "test": 65,
+    "title": "sectionONE",
+    "question_type": "declarative",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 348,
+  "fields": {
+    "test": 66,
+    "title": "multiple",
+    "question_type": "multiple",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 349,
+  "fields": {
+    "test": 66,
+    "title": "Dec",
+    "question_type": "declarative",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 350,
+  "fields": {
+    "test": 66,
+    "title": "Truf",
+    "question_type": "true-false",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 351,
+  "fields": {
+    "test": 67,
+    "title": "fist section",
+    "question_type": "true-false",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 352,
+  "fields": {
+    "test": 68,
+    "title": "nohtin",
+    "question_type": "true-false",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 353,
+  "fields": {
+    "test": 69,
+    "title": "323",
+    "question_type": "true-false",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 354,
+  "fields": {
+    "test": 70,
+    "title": "w",
+    "question_type": "true-false",
+    "amount_questions": 1
+  }
+},
+{
+  "model": "course.testsection",
+  "pk": 355,
+  "fields": {
+    "test": 71,
+    "title": "Ng",
+    "question_type": "true-false",
+    "amount_questions": 2
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 59,
+  "fields": {
+    "section": 347,
+    "correct_answer": 1,
+    "question": "Explain the benefits of this test?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 60,
+  "fields": {
+    "section": 347,
+    "correct_answer": 1,
+    "question": "Explain the hard coding of this test..."
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 61,
+  "fields": {
+    "section": 348,
+    "correct_answer": 2,
+    "question": "which one is ahmad's name?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 62,
+  "fields": {
+    "section": 348,
+    "correct_answer": 1,
+    "question": "whic color is rigt?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 63,
+  "fields": {
+    "section": 349,
+    "correct_answer": 1,
+    "question": "what is the best gun in the world?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 64,
+  "fields": {
+    "section": 349,
+    "correct_answer": 1,
+    "question": "what is the best cloth for winter?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 65,
+  "fields": {
+    "section": 350,
+    "correct_answer": 2,
+    "question": "Is it right?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 66,
+  "fields": {
+    "section": 350,
+    "correct_answer": 1,
+    "question": "Is your name the same as me?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 67,
+  "fields": {
+    "section": 351,
+    "correct_answer": 2,
+    "question": "Is it right?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 68,
+  "fields": {
+    "section": 351,
+    "correct_answer": 1,
+    "question": "Is that right?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 69,
+  "fields": {
+    "section": 352,
+    "correct_answer": 1,
+    "question": "X is y?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 70,
+  "fields": {
+    "section": 352,
+    "correct_answer": 2,
+    "question": "Y is x?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 71,
+  "fields": {
+    "section": 353,
+    "correct_answer": 2,
+    "question": "erewqr"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 72,
+  "fields": {
+    "section": 353,
+    "correct_answer": 1,
+    "question": "qwerqwer"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 73,
+  "fields": {
+    "section": 354,
+    "correct_answer": 2,
+    "question": "What is that"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 74,
+  "fields": {
+    "section": 355,
+    "correct_answer": 2,
+    "question": "Wha tis i t?"
+  }
+},
+{
+  "model": "course.testcase",
+  "pk": 75,
+  "fields": {
+    "section": 355,
+    "correct_answer": 1,
+    "question": "Whihdsf؟"
+  }
+},
+{
+  "model": "course.option",
+  "pk": 109,
+  "fields": {
+    "test_case": 61,
+    "value": "admsh",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 110,
+  "fields": {
+    "test_case": 61,
+    "value": "ahmad",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 111,
+  "fields": {
+    "test_case": 61,
+    "value": "maddk",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 112,
+  "fields": {
+    "test_case": 61,
+    "value": "ssllkl",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 113,
+  "fields": {
+    "test_case": 62,
+    "value": "blue",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 114,
+  "fields": {
+    "test_case": 62,
+    "value": "gereen",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 115,
+  "fields": {
+    "test_case": 62,
+    "value": "black",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 116,
+  "fields": {
+    "test_case": 62,
+    "value": "yellow",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 117,
+  "fields": {
+    "test_case": 65,
+    "value": "True",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 118,
+  "fields": {
+    "test_case": 65,
+    "value": "False",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 119,
+  "fields": {
+    "test_case": 66,
+    "value": "True",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 120,
+  "fields": {
+    "test_case": 66,
+    "value": "False",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 121,
+  "fields": {
+    "test_case": 67,
+    "value": "True",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 122,
+  "fields": {
+    "test_case": 67,
+    "value": "False",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 123,
+  "fields": {
+    "test_case": 68,
+    "value": "True",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 124,
+  "fields": {
+    "test_case": 68,
+    "value": "False",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 125,
+  "fields": {
+    "test_case": 69,
+    "value": "True",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 126,
+  "fields": {
+    "test_case": 69,
+    "value": "False",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 127,
+  "fields": {
+    "test_case": 70,
+    "value": "True",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 128,
+  "fields": {
+    "test_case": 70,
+    "value": "False",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 129,
+  "fields": {
+    "test_case": 71,
+    "value": "True",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 130,
+  "fields": {
+    "test_case": 71,
+    "value": "False",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 131,
+  "fields": {
+    "test_case": 72,
+    "value": "True",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 132,
+  "fields": {
+    "test_case": 72,
+    "value": "False",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 133,
+  "fields": {
+    "test_case": 73,
+    "value": "True",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 134,
+  "fields": {
+    "test_case": 73,
+    "value": "False",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 135,
+  "fields": {
+    "test_case": 74,
+    "value": "True",
+    "is_answer": false
+  }
+},
+{
+  "model": "course.option",
+  "pk": 136,
+  "fields": {
+    "test_case": 74,
+    "value": "غلط",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 137,
+  "fields": {
+    "test_case": 75,
+    "value": "True",
+    "is_answer": true
+  }
+},
+{
+  "model": "course.option",
+  "pk": 138,
+  "fields": {
+    "test_case": 75,
+    "value": "False",
+    "is_answer": false
+  }
+},
+{
+  "model": "instructors.instructorprofile",
+  "pk": 3,
+  "fields": {
+    "user": 20,
+    "image": "images/instructor/Screenshot_from_2024-09-11_13-45-41.png",
+    "phone": "0923485902",
+    "about": "I am a good teacher",
+    "timezone": "Asia/Kabul"
+  }
+},
+{
+  "model": "instructors.instructorprofile",
+  "pk": 4,
+  "fields": {
+    "user": 25,
+    "image": "images/instructor/Screenshot_from_2024-10-09_14-01-59.png",
+    "phone": "2342423423",
+    "about": null,
+    "timezone": null
+  }
+},
+{
+  "model": "instructors.instructorprofile",
+  "pk": 5,
+  "fields": {
+    "user": 26,
+    "image": "images/instructor/UseCase.jpeg",
+    "phone": "234234234",
+    "about": "",
+    "timezone": "Asia/Kabul"
+  }
+},
+{
+  "model": "instructors.instructorprofile",
+  "pk": 6,
+  "fields": {
+    "user": 27,
+    "image": "images/instructor/UseCase1.jpeg",
+    "phone": "3454345345",
+    "about": null,
+    "timezone": "A"
+  }
+},
+{
+  "model": "instructors.instructorprofile",
+  "pk": 7,
+  "fields": {
+    "user": 28,
+    "image": "images/instructor/TEstSEQ.jpeg",
+    "phone": "3453454345",
+    "about": null,
+    "timezone": "Asia/Kabul"
+  }
+},
+{
+  "model": "students.studentprofile",
+  "pk": 8,
+  "fields": {
+    "user": 21,
+    "image": "images/student/Screenshot_from_2024-09-11_13-45-41_qWGSchg.png",
+    "phone": "+937884230",
+    "taken_tests": []
+  }
+},
+{
+  "model": "students.studentprofile",
+  "pk": 9,
+  "fields": {
+    "user": 22,
+    "image": "images/student/bg-01.jpg",
+    "phone": "2452309849",
+    "taken_tests": []
+  }
+},
+{
+  "model": "students.studentprofile",
+  "pk": 10,
+  "fields": {
+    "user": 23,
+    "image": "images/student/home4.png",
+    "phone": "2323423423",
+    "taken_tests": []
+  }
+},
+{
+  "model": "students.studentprofile",
+  "pk": 11,
+  "fields": {
+    "user": 24,
+    "image": "images/student/AliEzatyar.jpg",
+    "phone": "2534905890",
+    "taken_tests": [
+      65,
+      66,
+      71
+    ]
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$vn2Hy3dhOOwV84d3FqhYUu$+tgl/aYUGB9/H0246aNqx1tfII7VEMSwS9B+TAQmCis=",
+    "last_login": "2024-10-31T03:30:19.925Z",
+    "is_superuser": true,
+    "username": "developer",
+    "first_name": "",
+    "last_name": "",
+    "email": "tareeqshah5@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2024-06-20T07:14:52Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 20,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$9Edg8lg3ZwQ0dI0QZv4oci$NI8ANCyX5yRfK49ib8tEUeWhpe/YBriORNdHIkzCHRI=",
+    "last_login": "2024-11-09T11:10:59.837Z",
+    "is_superuser": false,
+    "username": "Ahmad-Jaan",
+    "first_name": "joojan",
+    "last_name": "jejen",
+    "email": "ahmadjan@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-09-14T13:35:36Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 21,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$n7ZqrDyrLwUY5f6PQrKLnU$bJYRwQoo7RWVuLr+LcWXDaoPWr++GY6RrdOHMf7+v1A=",
+    "last_login": "2024-09-16T10:20:50Z",
+    "is_superuser": false,
+    "username": "mahdijoon",
+    "first_name": "Mahdi",
+    "last_name": "Jawad",
+    "email": "aliahmadyar10@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-09-15T10:02:44Z",
+    "groups": [
+      3
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 22,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$LFXAjuvMkRTMgcg4ZRD0d1$4kND6IYMbph/392ztX4KGKXqlIbTVctqjSbH9tnxfG4=",
+    "last_login": "2024-10-07T07:31:02.416Z",
+    "is_superuser": false,
+    "username": "ehsan",
+    "first_name": "Ehsan",
+    "last_name": "Ahmadyar",
+    "email": "ehsan@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-09-18T15:19:28Z",
+    "groups": [
+      3
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 23,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$o7N2Wr8VogZ5WHBiibKKXS$wBWEoEvftJRcu1bp2SKlJaKfW1BmZq8mICmnjoarFCg=",
+    "last_login": "2024-09-24T17:40:57.226Z",
+    "is_superuser": false,
+    "username": "mosa",
+    "first_name": "",
+    "last_name": "",
+    "email": "mos@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-09-19T03:21:45.455Z",
+    "groups": [
+      3
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 24,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$cBkqMOYJsxSadO6fQS06WM$d2PCMk6mvyL/Pd0V2zae6/eZFhgfOHsqxqcJgJlNz/c=",
+    "last_login": "2024-11-09T11:14:58.510Z",
+    "is_superuser": false,
+    "username": "mahdi",
+    "first_name": "",
+    "last_name": "",
+    "email": "sear@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-10-07T10:16:57.646Z",
+    "groups": [
+      3
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 25,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$IteA5is6YqPEb1HdcGUANz$Ei+BvEw3IoNMAgyv4GzOMBjEU8R4VpEeC4/OH+2hDjI=",
+    "last_login": "2024-10-18T03:22:26.321Z",
+    "is_superuser": false,
+    "username": "sdfsfs",
+    "first_name": "",
+    "last_name": "",
+    "email": "sdddf@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-10-18T03:22:25.626Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 26,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$f615jvfGjgepp6cpzlsvlk$/a/hpBbsNkwPcUxWvo3HAfnv73x+BBD1N3xY9L7rbcE=",
+    "last_login": "2024-10-18T03:24:03.059Z",
+    "is_superuser": false,
+    "username": "dgggg",
+    "first_name": "",
+    "last_name": "",
+    "email": "ggg@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-10-18T03:24:02.451Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 27,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$qdv7DYzZyWn2gbZmgyZfoe$zq1Ej93alwR1hVytZ0p+YNtoil/wM0FffldLW8/qh4w=",
+    "last_login": "2024-10-18T03:27:28.579Z",
+    "is_superuser": false,
+    "username": "ahmadyar",
+    "first_name": "",
+    "last_name": "",
+    "email": "ahmasdyar974@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-10-18T03:27:27.963Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 28,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$hYX2J8tbLB726IPfyiIubm$8aUmuGaibq26tfCmm3NK5bp7XdcFATXkBDRmRghpijM=",
+    "last_login": "2024-10-18T03:29:25.954Z",
+    "is_superuser": false,
+    "username": "Afghan1",
+    "first_name": "",
+    "last_name": "",
+    "email": "ahma3djan@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-10-18T03:29:25.246Z",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "Instructors",
+    "permissions": [
+      45,
+      46,
+      47,
+      48,
+      41,
+      42,
+      43,
+      44,
+      57,
+      58,
+      59,
+      60,
+      75,
+      29,
+      30,
+      31,
+      32,
+      37,
+      38,
+      39,
+      40,
+      53,
+      54,
+      55,
+      56
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 2,
+  "fields": {
+    "name": "Managers",
+    "permissions": [
+      33,
+      34,
+      35,
+      74,
+      36
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 3,
+  "fields": {
+    "name": "Students",
+    "permissions": [
+      73
+    ]
+  }
+}
+]

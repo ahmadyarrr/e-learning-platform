@@ -3,6 +3,55 @@
 {% block title %}
     {{ object.title }}
 {% endblock %}
+{%block head%}
+<style>
+h1{
+    text-align: center;
+    color: brown;
+}
+a{
+    text-decoration: none;
+}
+#course-progress{
+        width: 90%; /* Full width */
+        background-color: #e0e0e0; /* Background for progress bar */
+        border-radius: 5px; /* Rounded corners */
+        overflow: hidden; /* Hide overflow */
+        position: relative; /* Position for inner progress */
+        height: 20px; /* Height of the progress bar */
+        margin-top: 10px;
+        margin-bottom: 2%;
+}
+h3{
+    color: #28a745;
+}
+.contents{
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1)
+}
+.progress-container {
+        width: 23%; /* Full width */
+        background-color: #e0e0e0; /* Background for progress bar */
+        border-radius: 5px; /* Rounded corners */
+        overflow: hidden; /* Hide overflow */
+        position: relative; /* Position for inner progress */
+        height: 20px; /* Height of the progress bar */
+        margin-top: 10px;
+    }
+
+.progress {
+    height: 100%; /* Full height */
+    background-color: #28a745; /* Green for completed progress */
+    width: 0; /* Initial width (will be set by inline style) */
+    transition: width 0.4s ease; /* Smooth transition */
+}
+b{
+      font-size: large;
+      padding-top: 0.5%;
+      margin-left: 1%;
+    }
+</style>
+{%endblock%}
 {% block body %}
     <!--module title-->
     <h1>
@@ -12,11 +61,16 @@
     {%if test%}
     <p style="text-align: right;"><span class="btn btn-primary" style="margin-right: 10%;" >Ongoing Test</span></p>
         <ul style="text-align: right;">
-            
             <li><a href="{%url 'students:join_exam' test.id%}"> {{test.title}}</a></li>
         </ul>
     {%endif%}    
-    <h3>Your Progress <input type="range" value="{{course_progress_rate}}"> </h3>
+    <h3>Your Progress</h3>
+  <div style="display: flex;flex-direction: row;">
+     <div id="course-progress">
+          <div class="progress" style="width: {{course_progress_rate}}%;"></div>
+    </div>
+    <b>{{ course_progress_rate|floatformat:0 }}%</b>
+  </div>
     <!--modules of this course-->
     <div class="contents">
         <h3>Modules</h3>
@@ -25,13 +79,16 @@
                 <li data-id="{{ m.id }}" {% if m == module %}class="selected"{% endif%}>
                     <a href="{% url "course:st_module_content_list" object.id  m.id %}">
                         <span>
-                            Module <span class="order">{{ m.order|add:1 }}</span>
+                            Module <span class="order">{{ m.order|add:1 }}: {{ m.title }}</span>
                         </span>
-                        <span>
-                            Progress <input type="range" value="{{modules_seen_rates|get_key_vale:m.id}}">
-                        </span>
-                        <br>
-                        {{ m.title }}
+                    <div style="display: flex;flex-direction: row;">
+
+                        <div class="progress-container">
+                            <div class="progress" style="width: {{modules_seen_rates|get_key_vale:m.id}}%;"></div>
+                        </div>
+                        <b>{{ modules_seen_rates|get_key_vale:m.id|floatformat:0 }}%</b>
+                    </div>
+                        <br/>
                     </a>
                 </li>
                 {% empty %}
@@ -42,6 +99,7 @@
     <!-- contents of the first module of the course as a sample -->
     <div class="module">
         {% for content in module.contents.all %}
+        {{content.item}}
             {% with item=content.item %}
                 <h2>{{ item.title }}</h2>
                 {{ item.render }}<!--what is render; it is displaying whatever the content be-->

@@ -17,7 +17,6 @@ class Subject(models.Model):
         "auth.User",
         on_delete=models.CASCADE,
         related_name="subjects",
-        default=User.objects.get(username="developer").id,
     )
     description = models.TextField(null=True, blank=True)
 

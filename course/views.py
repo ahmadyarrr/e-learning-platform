@@ -36,7 +36,7 @@ def slugify(sen):
 
 
 class SubjectManage(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    permission_required = "course.managers_access"
+    permission_required = "_account.managers_access"
     model = Subject
     template_name = "subjects/list.html"
     context_object_name = "subjects"
@@ -106,13 +106,13 @@ class PublicCourseDetail(DetailView):
 
 
 class CourseManageView(InstructorCourseMixin, ListView):
-    permission_required = "course.view_course"
+    permission_required = "instructors.instructors_access"
     permission_denied_message = "You are not allowed to see courses "
     template_name = "courses/manage/course/list.html"
 
 
 class CourseCreateView(InstructorCourseEditMixin, CreateView):
-    permission_required = "course.add_course"
+    permission_required = "instructors.instructors_access"
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         print("dispatch")
@@ -128,12 +128,12 @@ class CourseCreateView(InstructorCourseEditMixin, CreateView):
 
 
 class CourseUpdateView(InstructorCourseEditMixin, UpdateView):
-    permission_required = "course.change_course"
+    permission_required = "instructors.instructors_access"
 
 
 class CourseDeleteView(InstructorCourseMixin, DeleteView):
     template_name = "courses/manage/course/delete.html"
-    permission_required = "course.delete_course"
+    permission_required = "instructors.instructors_access"
 
 
 # login required mixin does not work!
@@ -234,7 +234,7 @@ class ContentCreateUpdateView(View, TemplateResponseMixin):
 
 
 class ContentDelete(View):
-
+    
     def post(self, request, id):
         content = get_object_or_404(
             Content, id=id, module__course__instructor=request.user

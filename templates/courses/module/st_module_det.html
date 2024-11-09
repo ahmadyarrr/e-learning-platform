@@ -15,24 +15,57 @@
     .all a {
       text-decoration: none;
     }
+    .progress-container {
+      width: 23%; /* Full width */
+      background-color: #e0e0e0; /* Background for progress bar */
+      border-radius: 5px; /* Rounded corners */
+      overflow: hidden; /* Hide overflow */
+      position: relative; /* Position for inner progress */
+      height: 20px; /* Height of the progress bar */
+      margin-top: 10px;
+    }
+    
+    .progress {
+      height: 100%; /* Full height */
+      background-color: #28a745; /* Green for completed progress */
+      width: 0; /* Initial width (will be set by inline style) */
+      transition: width 0.4s ease; /* Smooth transition */
+    }
+    b {
+      font-size: large;
+      padding-top: 0.5%;
+      margin-left: 1%;
+    }
+    #module-contents{
+      padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1)
+    }
   </style>
 {% endblock %}
 {% block body %}
-  <h2>Lessons in module `{{ module.title }}`</h2>
+  <h2>Module `{{ module.title }}`</h2>
   <h3>Your Progress</h3>
-  <input type="range" value="{{percent_rate}}">
-  <script src="{% static 'js/csrf.js' %}"></script>
-  <div class="all">
-    <ul>
-      {% for c in module.contents.all %}
-        <li >
-          <a href="{% url 'course:st_content_view' module.course.id module.id c.id %}">{{ c.item.title }}</a>
-        <span id="{{c.id}}" ></span>
-        </li>
-      {% endfor %}
-    </ul>
+  <div style="display: flex;flex-direction: row;">
+    <div class="progress-container">
+      <div class="progress" style="width: {{ percent_rate }}%;"></div>
+    </div>
+    <b>{{ percent_rate|floatformat:0 }}%</b>
   </div>
-  <!--taking out progress-->
+  <script src="{% static 'js/csrf.js' %}"></script>
+  <div id="module-contents">
+    <h3>Contents</h3>
+    <div class="all">
+      <ul>
+        {% for c in module.contents.all %}
+          <li>
+            <a href="{% url 'course:st_content_view' module.course.id module.id c.id %}">{{ c.item.title }}</a>
+            <span id="{{ c.id }}"></span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <!-- taking out progress -->
   <script>
     window.addEventListener('DOMContentLoaded', function (e) {
         /* request prerequsits*/
