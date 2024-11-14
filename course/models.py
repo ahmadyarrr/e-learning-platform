@@ -46,10 +46,13 @@ class Course(models.Model):
     overview_video = models.FileField(
         upload_to="course/overview", null=True, blank=True
     )
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["-created"]
-
+        indexes = [
+            models.Index(fields=["title",])
+        ]
 
     def get_absolute_url(self):
         return reverse("course:detail_course", kwargs={"id": self.pk})

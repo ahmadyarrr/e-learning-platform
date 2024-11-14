@@ -5,49 +5,75 @@
   <head>
     <title>
       Educa|{% block title %}
+
       {% endblock %}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{%static 'css/course/base.css'%}">
+    <link rel="stylesheet" href="{% static 'css/course/base.css' %}" />
     <link rel="stylesheet" href="{% static 'boot/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'boot/css/bootstrap.css' %}" />
     <link rel="stylesheet" href="{% static 'boot/css/bootstrap.grid.css' %}" />
     <link rel="stylesheet" href="{% static 'css/course/header.css' %}" />
-    
+
     {% block head %}
+
     {% endblock %}
   </head>
   <body>
     {% include './header.html' %}
-    <div id="content" >
+    <div id="content">
       {% block body %}
+
       {% endblock %}
     </div>
 
     {% include './footer.html' %}
-    {%block include_js%}
-    {%endblock%}
+    {% block include_js %}
+    <script type="application/json" id="search-url">
+        {{request.get_host}}{%url 'course:search' %}
+    </script>
+    
+    {% endblock %}
     <script>
             window.addEventListener("DOMContentLoaded",(event) => {
-                {%block domeready%}{%endblock%}
+              const searchInput = document.getElementById("search-input")
+              var timeout;
+              searchInput.addEventListener("input",function(event){
+                const query =  searchInput.value;
+                clearTimeout(timeout);
+                timeout = setTimeout(()=>{
+                  // fething
+                  const url = "http://" + document.getElementById("search-url").innerText.trim()+"?query="+query;
+                  fetch(url).then(response => response.json()).then(result =>{
+                    const foundCourses = result.result
+                    if (foundCourses.length> 0 ){
+                      // if there were found any courses
+                      console.log("courses found in server....",foundCourses)
+                      // reseting the ul
+                      const resultListElement = document.getElementById("search-result")
+                      resultListElement.innerHTML = ``
+                      resultListElement.style.display = "block"
+
+                      // adding courses titles as li elements to ul
+                      foundCourses.forEach(course =>{
+                        const li = document.createElement("li")
+                        li.style.display = "block"
+                        li.innerText = course[1]
+                        resultListElement.appendChild(li)
+                        // making it a link
+                        li.addEventListener("click",function(e){
+                          console.log('this url was made', window.location.protocol+ "//"+window.location.host+`/course/${course[0]}/detail` )
+                          window.location.href = window.location.protocol+ "//"+window.location.host+`/course/${course[0]}/detail` 
+                        })
+                      })
+                  }
+                  })
+                },1000)
+              })
+              {%block domeready%}
+
+              {%endblock%}
             })
     </script>
-    {% comment %} <script>
-      document.addEventListener('DOMContentLoaded', function() {
-      let dropdownButton = document.querySelector('.dropdown-button');
-      let dropdownContent = document.querySelector('.dropdown-content');
-  
-      dropdownButton.addEventListener('click', function(event) {
-          event.stopPropagation();
-          dropdownContent.classList.toggle('show');
-      });
-  
-      document.addEventListener('click', function(event) {
-          if (!dropdownButton.contains(event.target)) {
-              dropdownContent.classList.remove('show');
-          }
-      });
-  });
-      </script> {% endcomment %}
   </body>
 </html>

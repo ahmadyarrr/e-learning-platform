@@ -21,13 +21,12 @@ from django.urls import reverse, reverse_lazy
 from .mixins import (
     InstructorCourseMixin,
     InstructorCourseEditMixin,
-    authenMixin,
 )
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
-
-
+from django.contrib.postgres.search import SearchVector,TrigramSimilarity
+from django.contrib.auth.decorators import login_required
 def slugify(sen):
     return "-".join(sen.split())
 
@@ -344,3 +343,16 @@ class courseEnrollView(FormView, LoginRequiredMixin):
     def get_success_url(self) -> str:
         # this method is called by super().form_valid in return redirect HttpResponseRedirect(self.get_success_url)
         return reverse_lazy("students:student_course_detail", args=[self.course.id])
+
+def search(request,query=None):
+    try:
+        courses = Course.objects.all()
+        query = request.GET["query"]
+        if len(query) > 1:
+            result = [[item.slug,item.title] for item in courses.annotate(term=SearchVector("title", "overview")).\
+                filter(term=query)]
+            return JsonResponse({"result":result})
+        else:
+            return HttpResponseForbidden
+    except Exception as e:
+        return HttpResponse("error")
