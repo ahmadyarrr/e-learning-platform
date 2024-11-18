@@ -69,7 +69,7 @@ b{
      <div id="course-progress">
           <div class="progress" style="width: {{course_progress_rate}}%;"></div>
     </div>
-    <b>{{ course_progress_rate|floatformat:0 }}%</b>
+    <b>{%if object.modules.count > 0%}{{ course_progress_rate|floatformat:0 }}%{%else%}0%{%endif%}</b>
   </div>
     <!--modules of this course-->
     <div class="contents">

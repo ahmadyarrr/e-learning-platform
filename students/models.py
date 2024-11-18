@@ -9,3 +9,4 @@ class StudentProfile(models.Model):
     phone  = models.CharField(max_length=12)
     taken_tests = models.ManyToManyField('course.Test',related_name="students",
                                          null=True,blank=True)
+    timezone = models.CharField(max_length=15,null=True,blank=True)

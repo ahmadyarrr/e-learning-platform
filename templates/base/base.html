@@ -21,22 +21,26 @@
   </head>
   <body>
     {% include './header.html' %}
-    <div id="content">
+    <div id="whole-loader">
+      <div id="loader"></div>
+      <p>Loading...</p>
+    </div>
+
+    <div id="content" style="display: none;">
       {% block body %}
 
       {% endblock %}
     </div>
-
     {% include './footer.html' %}
     {% block include_js %}
-    <script type="application/json" id="search-url">
+      <script type="application/json" id="search-url">
         {{request.get_host}}{%url 'course:search' %}
     </script>
-    
     {% endblock %}
     <script>
             window.addEventListener("DOMContentLoaded",(event) => {
               const searchInput = document.getElementById("search-input")
+              const resultListElement = document.getElementById("search-result")
               var timeout;
               searchInput.addEventListener("input",function(event){
                 const query =  searchInput.value;
@@ -48,9 +52,7 @@
                     const foundCourses = result.result
                     if (foundCourses.length> 0 ){
                       // if there were found any courses
-                      console.log("courses found in server....",foundCourses)
                       // reseting the ul
-                      const resultListElement = document.getElementById("search-result")
                       resultListElement.innerHTML = ``
                       resultListElement.style.display = "block"
 
@@ -67,12 +69,35 @@
                         })
                       })
                   }
+                  else{
+                        const li = document.createElement("li")
+                        // showing the results ul
+                        resultListElement.style.display = "block"
+                        li.innerText = "No results..."
+                        li.style.display = "block"
+                        resultListElement.appendChild(li)
+
+                      }
                   })
                 },1000)
               })
+              document.body.addEventListener("click",function(e){
+                searchInput.value = searchInput.ariaPlaceholder
+                resultListElement.style.display = "none"
+              })
+              // loader
+
               {%block domeready%}
 
               {%endblock%}
+
+            })
+            window.addEventListener("load",(event)=>{
+              setTimeout(function(e){
+                document.getElementById("whole-loader").style.display = "none"
+                document.getElementById("content").style.display = "block"
+              },300)
+              
             })
     </script>
   </body>

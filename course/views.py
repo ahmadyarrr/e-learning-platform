@@ -102,7 +102,14 @@ class PublicCourseDetail(DetailView):
         context = super().get_context_data(**kwargs)
         context["enroll_form"] = EnrollCourseForm(initial={"course": self.get_object})
         return context
-
+    def get(self, request, *args, **kwargs):
+        """overriden to redirect the course instructor to edit page"""
+        instructor_id = self.get_object().instructor.id
+        user_id =  self.request.user.id
+        if instructor_id == user_id:
+            return redirect("course:course_update",self.get_object().id)
+        # go normal
+        return super().get(request,*args, **kwargs)
 
 class CourseManageView(InstructorCourseMixin, ListView):
     permission_required = "instructors.instructors_access"

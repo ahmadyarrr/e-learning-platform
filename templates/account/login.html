@@ -34,7 +34,7 @@
       {% csrf_token %}
       <p style="margin-top: 3%;" class="">
         Don't Have An Account? 
-        <button type="button" onclick="document.getElementById('signup-dialog').showModal()"  style="text-decoration: none;btn btn-success" >Sign Up</button>
+        <button class="btn btn-success mt-3 w-100" type="button" onclick="document.getElementById('signup-dialog').showModal()"  style="text-decoration: none;btn btn-success" >Sign Up</button>
       </p>
       <dialog  id="signup-dialog" style="margin-top: 10%;background-color: aliceblue;border-radius: 10px;border: 1px solid black;box-shadow: 0px 0px 4px 6px lightblue;">
         <button style="margin-left: 90%;" class="btn btn-primary"  type="button" onclick="document.querySelector('dialog').close()">X</button>

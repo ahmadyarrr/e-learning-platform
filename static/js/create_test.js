@@ -16,6 +16,8 @@ document.querySelector("dialog").showModal();
                 <p><span>True & False</span><span><input value="true-false" class="radio" type='radio' name="question_type" ></span>
                  <p><span>Declarative</span><span><input value="declarative" required class="radio" type='radio' name="question_type" ></span>
                 <p>Amount Questions<input class="input-number" name="amount_questions" type="number"></p>
+                <p>Total Score<input class="input-number" value="20" required name="total_score" type="number"></p>
+                
                 </form>
                 `;
 
@@ -30,6 +32,8 @@ document.querySelector("dialog").showModal();
                 <p><span>True & False</span><span><input value="true-false" class="radio" type='radio' name="question_type" ></span>
                  <p><span>Declarative</span><span><input value="declarative" required class="radio" type='radio' name="question_type" ></span>
                 <p>Amount Questions<input class="input-number" name="amount_questions" type="number"></p>
+                <p>Total Score<input class="input-number" value="20" required name="total_score" type="number"></p>
+                
                 </form>
                 `;
   });
@@ -113,8 +117,10 @@ document.querySelector("dialog").showModal();
       .then((response) => response.json())
       .then((status) => {
         if (status.response == 200) {
+          console.log("request sent..")
           // setting the section's db id 
           const section_ids = status.section_ids
+          console.log(section_ids)
           // removing the dialog element
           document.querySelectorAll("dialog")[0].remove();
           var sections = document.getElementById("sections");
@@ -161,7 +167,6 @@ document.querySelector("dialog").showModal();
                 document.getElementById("questions-form")
               );
               const all_form_entries = Array.from(form_obj.entries()); // since entries return an iterator not array
-
               const allSectionsData = new Array();
               var temp = new Array(); // keep tracks of sections partition
               allSections.forEach((section, index) => {
@@ -169,7 +174,9 @@ document.querySelector("dialog").showModal();
                   const title = section[0][1];
                   const q_type = section[1][1];
                   const amount_q = parseInt(section[2][1]);
+                  const total_score = section[3][1]
                   const item_amount = calcItems(amount_q, q_type); // calculates total entries of a section
+                  
                   // console.log(all_form_entries,all_form_entries.length);
 
                   // console.log('items calculated: ', item_amount)
@@ -220,7 +227,7 @@ document.querySelector("dialog").showModal();
                     question_type: q_type,
                     amount_q: amount_q,
                     section_id: document.getElementById("section_id"+index).value,
-                    questions: questions
+                    questions: questions,
                   };
                   allSectionsData.push(this_section);
                 }
@@ -240,7 +247,7 @@ document.querySelector("dialog").showModal();
               };
               fetch(url,options).then(response => response.json()).then(status =>{
                 if (status['OK']=="yes"){
-                  window.location.href = "http://"+document.getElementById("success-redirect").innerText.trim()
+                  window.location.href = window.location.protocol+"//"+document.getElementById("success-redirect").innerText.trim()
                 }
               })
             });

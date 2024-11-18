@@ -1,11 +1,12 @@
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from allauth.account.views import SignupView
 from django.views.generic.base import TemplateResponseMixin
 from course.models import Course, Test, TestSection, TestCase, Option
 from .models import InstructorProfile
 from django.contrib.auth import login
+from django.contrib.auth.decorators import  login_required,permission_required
 from django.shortcuts import redirect
 from .forms import InstructorRegisterForm
 from django.contrib.auth.models import Group
@@ -46,7 +47,8 @@ class InstructorRegisterView(SignupView, TemplateResponseMixin):
             return self.render_to_response({"form": form})
         return redirect("course:manage_course_view")
 
-
+@login_required
+@permission_required(["instructors.instructors_access"])
 def create_test_view(request, course_id=None):
     """
     this view creates test, sections, testcases and option objects
@@ -61,20 +63,24 @@ def create_test_view(request, course_id=None):
         if "meta" in body:
             """this part is for creating test object, sections and scheduling"""
             try:
-
+                # 1 fixing timing confilicts in world-wide scope
                 # creating the instructors timezone object
                 instructor_tz = py_timezone(request.user.instructor_profile.timezone)
-                course_id, duration = body["course_id"], body["duration"]
-                title = body["test_title"]
-                # creating a datetime with specific tz and converting to utc
-                start_date = instructor_tz.localize(
-                    datetime.fromisoformat(body["start_date"])
-                ).astimezone(utc)
-                # if we directly create the UTC, timing will not be exact (+xx:yy)
+                # creating a datetime with specific tz and converting it to utc
+                start_date = instructor_tz.localize(datetime.fromisoformat(body["start_date"])).astimezone(utc)
                 deadline = instructor_tz.localize(
                     datetime.fromisoformat(body["deadline"])
                 ).astimezone(utc)
+                # 2 calculating the total score of the test
+                sections = body["sections"]
 
+                test_total_score = sum([int(sec[3][1]) for sec in sections if sec !=[]])
+                # 3 creating or getting the test obejct
+                course_id, duration, title = (
+                    body["course_id"],
+                    body["duration"],
+                    body["test_title"],
+                )
                 course = Course.objects.get(id=course_id)
                 test = Test.objects.get_or_create(
                     title=title,
@@ -82,41 +88,45 @@ def create_test_view(request, course_id=None):
                     duration=duration,
                     date=start_date,
                     deadline=deadline,
+                    total_score=test_total_score
                 )[
                     0
                 ]  # (object, bool[true--> object created now]) when using get_or_create
-                # telling celery to inactivate the test
+
+                # 4 telling celery to inactivate the test until start date if delay
                 delay = (deadline - start_date).total_seconds()
                 if delay > 1:
                     # mark_test_inactive.apply_async((test.id,),countdown=delay)
                     mark_test_inactive.apply_async((test.id,), eta=test.deadline)
-                # creating the section objects
-                sections = body["sections"]
+                # 5 creating the section objects
                 section_ids = []
                 for sec in sections:
                     if sec != []:
-                        amount_questions, sec_title, sec_type = (
+                        amount_questions, sec_title, sec_type, total_score = (
                             sec[2][1],
                             sec[0][1],
                             sec[1][1],
+                            sec[3][1]
                         )
                         test_section = TestSection.objects.create(
                             title=sec_title,
                             amount_questions=amount_questions,
                             question_type=sec_type,
                             test=test,
+                            score=total_score
                         )
                         test_section.save()
                         section_ids.append(test_section.id)
                 return JsonResponse({"response": 200, "section_ids": section_ids})
             except Exception as e:
-                return JsonResponse({"response": 500})
+                print("ERROR:",e,e.args)
+                return HttpResponse("error",status=500)
         elif "data" in body:
             """
-            this part handles saving all question values and options
-            data in JSON: [{s_title:,s_id, type:, n_q:, q_list: [{value,options:[], c_answer},{},{}]}, {nextSec}]
+            #6
+                this part handles saving all question values and options
+                data in JSON: [{s_title:,s_id, type:, n_q:, q_list: [{value,options:[], c_answer},{},{}]}, {nextSec}]
             """
-            # print(" we are receiving questions ....")
             data = body["data"]  # array of questions
             for sec in data:
                 sec_title = sec["section_title"]

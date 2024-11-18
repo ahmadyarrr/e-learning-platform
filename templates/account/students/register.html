@@ -1,46 +1,50 @@
-{%extends 'base/base.html'%}
-{%block head%}
-    <style>
-
-        #signup_content label{
-            display: block;
-        }
-        #signup_content input{
-            width: 100%;
-        }
-        #signup_content span{
-            display: block;
-        }
-    </style>
-    <script>
-        
-    </script>
-{%endblock%}
-{%block body%}
-<h1 style="text-align: center;margin-top: 4%;margin-bottom: 2%;">Sign Up</h1>
-{% if form.errors %}
+{% extends 'base/base.html' %}
+{% block head %}
+  <style>
+    #signup_content label {
+      display: block;
+    }
+    #signup_content input {
+      width: 100%;
+    }
+    #signup_content span {
+      display: block;
+    }
+  </style>
+  <script>
+    // getting and sticking users's timezone data with form
+    document.addEventListener('DOMContentLoaded', function (e) {
+      const form = document.getElementById('student-reg-form')
+      const tzInp = document.createElement('input')
+      tzInp.name = 'timezone'
+      tzInp.type = 'hidden'
+      tzInp.value = Intl.DateTimeFormat().resolvedOptions().timeZone
+      form.appendChild(tzInp)
+    })
+  </script>
+{% endblock %}
+{% block body %}
+  <h1 style="text-align: center;margin-top: 4%;margin-bottom: 2%;">Sign Up</h1>
+  {% if form.errors %}
     <div class="container d-flex justify-content-center text-danger">
-      {% for field in form  %}
-            {% for error in field.errors  %}
-                {{error}}
-                <br>
-            {% endfor %}
+      {% for field in form %}
+        {% for error in field.errors %}
+          {{ error }}
+          <br />
+        {% endfor %}
       {% endfor %}
-      <br>
-      <br>
+      <br />
+      <br />
     </div>
   {% endif %}
-<div id="signup_content" style="width: 30%; box-shadow: 1px 1px 6px 6px lightgray;padding: 2%;" class="container d-flex justify-content-center" >
-    <form  method="post" enctype="multipart/form-data" acction="{%url 'students:register'%}">
-    {%csrf_token%}
-    {{form.as_p}}
-    <input type="submit" class="btn btn-primary"  value="Save">
-</form>
-</div>
+  <div id="signup_content" style="width: 30%; box-shadow: 1px 1px 6px 6px lightgray;padding: 2%;" class="container d-flex justify-content-center">
+    <form id="student-reg-form" method="post" enctype="multipart/form-data" acction="{% url 'students:register' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" class="btn btn-primary" value="Save" />
+    </form>
+  </div>
 {% endblock %}
-{%block domeready%}
-    var list = document.querySelectorAll('ul');
-            list.forEach(l =>{
-                l.style.display = 'none';
-            });
-{%endblock%}
+{% block domeready %}
+  var list = document.querySelectorAll('ul'); list.forEach(l =>{ l.style.display = 'none'; });
+{% endblock %}

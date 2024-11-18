@@ -1,10 +1,10 @@
 {% extends 'base/base.html' %}
 {% block body %}
-{%if test.active%}
+{%if test.active %}
   <h1>Ongoing Test `{{ test.title }}`</h1>
-  <p>Start Date: {{ test.date }}</p>
+  <p>Start Date: {{ test.start_date }}</p>
   <p>End Date: {{ test.deadline }}</p>
-  <p>Duration(mins): {{ test.duration }}</p>
+  <p>Duration: {{ test.duration }} (mins)</p>
   <form method="post" action="{% url 'students:join_exam' test.id %}">
     {% csrf_token %}
     <input type="submit" value="Join Exam" class="btn btn-primary w-75%" />

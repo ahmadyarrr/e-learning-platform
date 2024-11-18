@@ -13,6 +13,6 @@ def model_name(obj):
 @register.filter
 def get_key_vale(dic, key):
     if key in dic:
-        return dic[key] * 100
+        return dic[key]
     else:
         return 0 

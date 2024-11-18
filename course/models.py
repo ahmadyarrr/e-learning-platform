@@ -51,7 +51,11 @@ class Course(models.Model):
     class Meta:
         ordering = ["-created"]
         indexes = [
-            models.Index(fields=["title",])
+            models.Index(
+                fields=[
+                    "title",
+                ]
+            )
         ]
 
     def get_absolute_url(self):
@@ -137,93 +141,125 @@ class Text(BaseContent):
 # student productity
 class Test(models.Model):
     title = models.CharField(max_length=60)
-    course = models.ForeignKey('course.Course',
-                               on_delete=models.CASCADE,
-                               related_name='related_tests')
+    course = models.ForeignKey(
+        "course.Course", on_delete=models.CASCADE, related_name="related_tests"
+    )
     date = models.DateTimeField(default=now)
-    duration = models.PositiveSmallIntegerField(default=20) # in minutes
+    duration = models.PositiveSmallIntegerField(default=20)  # in minutes
     deadline = models.DateTimeField(default=now)
     active = models.BooleanField(default=False)
-    
+    total_score = models.PositiveSmallIntegerField(default=60)
     def get_absolute_url(self):
         return reverse("courses/test/test_detail.html", kwargs={"pk": self.pk})
-    
+
     def __str__(self):
-        return "Test "+self.title
+        return "Test " + self.title
+
 
 class TestSection(models.Model):
-    test = models.ForeignKey('course.Test',
-                             on_delete=models.CASCADE,
-                             related_name='sections')
+    test = models.ForeignKey(
+        "course.Test", on_delete=models.CASCADE, related_name="sections"
+    )
     title = models.CharField(max_length=255)
     question_type = models.CharField(
         max_length=20,
         choices=[
-            ("multiple","four-option",),
-            ("true-false","True & False",),
-            ("declarative","Declarative",),
+            (
+                "multiple",
+                "four-option",
+            ),
+            (
+                "true-false",
+                "True & False",
+            ),
+            (
+                "declarative",
+                "Declarative",
+            ),
         ],
     )
-    amount_questions = models.PositiveSmallIntegerField() 
+    amount_questions = models.PositiveSmallIntegerField()
+    score = models.PositiveSmallIntegerField(default=30)
+    def __str__(self):
+        return f"Test Section obj {self.title}"
 
 class TestCase(models.Model):
-    section = models.ForeignKey('course.TestSection',
-                                on_delete=models.CASCADE,
-                                related_name='test_cases')
-    
+    section = models.ForeignKey(
+        "course.TestSection", on_delete=models.CASCADE, related_name="test_cases"
+    )
+
     correct_answer = models.PositiveSmallIntegerField(null=True, blank=True)
     question = models.TextField()
+
     def __str__(self):
         return self.question
 
 
-class Option(models.Model):    
-    test_case = models.ForeignKey('course.TestCase',
-                                  on_delete=models.CASCADE,
-                                  related_name='options')
+class Option(models.Model):
+    test_case = models.ForeignKey(
+        "course.TestCase", on_delete=models.CASCADE, related_name="options"
+    )
     value = models.CharField(max_length=20)
     is_answer = models.BooleanField(default=False)
 
 
 class Score(models.Model):
-    student  = models.ForeignKey('auth.User',
-                                 on_delete=models.CASCADE,
-                                 related_name='st_scores')
-    
-    hw = models.ForeignKey('course.Assignment',
-                            on_delete=models.CASCADE,
-                            related_name='related_scores',
-                            null=True,
-                            blank=True
-                                 )
-    
-    test = models.ForeignKey('course.Test',
-                             on_delete=models.CASCADE,
-                             related_name='related_scores',
-                             null=True,
-                             blank=True)
-    course = models.ForeignKey('course.Course',
-                               on_delete=models.CASCADE,
-                               related_name='related_scores')
-    
+    student = models.ForeignKey(
+        "auth.User", on_delete=models.CASCADE, related_name="st_scores"
+    )
+    hw = models.OneToOneField(
+        "course.Assignment",
+        on_delete=models.CASCADE,
+        related_name="related_scores",
+        null=True,
+        blank=True,
+    )
+    submission = models.ForeignKey('course.TestSubmission',
+                                   on_delete=models.CASCADE,
+                                   related_name="related_scores",
+                                   )
+    test_section = models.ForeignKey(
+        "course.TestSection",
+        on_delete=models.CASCADE,
+        related_name="related_scores",
+        null=True,
+        blank=True,
+    )
+    course = models.ForeignKey(
+        "course.Course", on_delete=models.CASCADE, related_name="related_scores"
+    )
+
     value = models.FloatField(default=0)
+    def __str__(self):
+        type_ = None
+        if self.hw:
+            type_ = f"on HW {self.hw}"
+        elif self.test_section:
+            type_ = f"on TS {self.test_section}"
+        else:
+            return "None"
+        return f"Score obj {type_} - {self.value}"
 
 class Assignment(models.Model):
-    student  = models.ForeignKey('auth.User',
-                                 on_delete=models.CASCADE,
-                                 related_name='related_hws')
-    
-    course = models.ForeignKey('course.Course',
-                               on_delete=models.CASCADE,
-                               related_name='related_hws')
-    document = models.FileField(upload_to= get_path)
+    student = models.ForeignKey(
+        "auth.User", on_delete=models.CASCADE, related_name="related_hws"
+    )
+
+    course = models.ForeignKey(
+        "course.Course", on_delete=models.CASCADE, related_name="related_hws"
+    )
+    document = models.FileField(upload_to=get_path)
     start = models.DateTimeField(default=now)
     deadline = models.DateTimeField(default=now)
 
-# will be applied later, it is an action bar
-# class Notification(models.Model):
-#     course = models.ForeignKey('course.Course',
-#                                 on_delete=models.CASCADE,
-#                                 related_name='notifications')
-#     active = models.BooleanField(default=True)
-#     to = models.CharField(max_length=10,hoices=('instructor','student'))
+
+class TestSubmission(models.Model):
+    student = models.ForeignKey("students.StudentProfile",
+                                on_delete=models.CASCADE,
+                                related_name="test_sumissions")
+    test = models.ForeignKey('course.Test',
+                             on_delete=models.CASCADE,
+                             related_name="submissions")
+    total_score = models.PositiveSmallIntegerField(default=0)
+    def __str__(self):
+        return f"TestSubmission {self.student.user.username}-{self.test.title}"
