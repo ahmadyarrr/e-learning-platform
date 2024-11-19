@@ -219,7 +219,7 @@ li {
   border-radius: 50%;
 }
 
-  
+
 /* loader part*/
 #whole-loader p {
   font-size: 34px;
@@ -227,9 +227,6 @@ li {
 }
 
 #loader {
-  margin-top: 10%;
-  margin-left: 45%;
-  width: 100%;
   display: flex;
   align-items: center;
   border: 16px solid #f3f3f3;

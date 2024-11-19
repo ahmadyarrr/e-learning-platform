@@ -21,10 +21,10 @@
   </head>
   <body>
     {% include './header.html' %}
-    <div id="whole-loader">
+    <dialog id="whole-loader" style="all: unset; margin-top: 10%;margin-left: 45%;" >
       <div id="loader"></div>
       <p>Loading...</p>
-    </div>
+    </dialog>
 
     <div id="content" style="display: none;">
       {% block body %}
@@ -92,11 +92,12 @@
               {%endblock%}
 
             })
+            document.getElementById("whole-loader").showModal()
             window.addEventListener("load",(event)=>{
               setTimeout(function(e){
-                document.getElementById("whole-loader").style.display = "none"
+                document.getElementById("whole-loader").remove()
                 document.getElementById("content").style.display = "block"
-              },300)
+              },200)
               
             })
     </script>

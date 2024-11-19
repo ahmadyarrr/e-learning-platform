@@ -31,7 +31,6 @@ def save_message(message,course_id,ntime,sender_id,sender_name):
     key = f"mes_c{course_id}"
     message = {'message':message,'sender_id':sender_id,'sender':sender_name,'time':ntime,'cid':course_id}
     messages = get_messages(course_id) or {} 
-    print("messages--0-0-0-0",messages)
     messages[f'message_#{messages.__len__()}'] = message    
     redis_client.set(key,json.dumps(messages))
     

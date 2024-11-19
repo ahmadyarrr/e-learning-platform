@@ -106,6 +106,8 @@
 
             }
           })
+          // ----------------getting previous messages from local storage ---------------------------------------
+
           // getting course id
           const course_id = JSON.parse(document.getElementById('course-id').textContent);
         
@@ -175,9 +177,8 @@
                 })
                   }
             } )
-
-          // real-time message communication
-            // creating the room url for the specific course
+          // ---------------------- Real Time Chat logic here -------------------------------------------------------------------------------------------
+          // creating the room url for the specific course
             const url = 'ws://'+window.location.host+'/ws/chat/room/'+ course_id + '/';
             
             // creating the WebSocket
