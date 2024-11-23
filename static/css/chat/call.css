@@ -1,0 +1,10 @@
+#peers{
+    border: 2px solid black;
+}
+
+video{
+    margin-top: 10%;
+    padding: 6px 8px;
+    width: 300px;
+    border-radius: 15px;
+}

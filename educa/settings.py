@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "debug_toolbar",
     "embed_video",
+    "django_extensions",
     "students.apps.StudentsConfig",
     # 'api.apps.ApiConfig',
     "course.apps.CourseConfig",

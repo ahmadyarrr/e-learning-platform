@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Video Call</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        video {
+            width: 30%;
+            margin: 10px;
+            border: 2px solid #333;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Group Video Call</h1>
+    <div id="videos"></div>
+    {{course.id|json_script:'course-id'}}
+    {{request.user.username|json_script:'username'}}
+    <script>
+        const course_id = JSON.parse(document.getElementById('course-id').textContent)
+
+        const videosContainer = document.getElementById('videos');
+        const url = "ws://" + window.location.host + "/ws/call/room/" + course_id + "/"
+
+        const socket = new WebSocket(url);
+
+        const peerConnections = {};
+        let localStream;
+
+        const startCall = async () => {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            addLocalVideo(localStream);
+
+            socket.onmessage = async (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.type === 'new_peer') {
+                    await createPeerConnection(data.peerId, localStream);
+                } else if (data.type === 'offer') {
+                    await handleOffer(data);
+                } else if (data.type === 'answer') {
+                    await handleAnswer(data);
+                } else if (data.type === 'candidate') {
+                    await handleCandidate(data);
+                }
+            };
+
+            socket.send(JSON.stringify({ type: 'join' }));
+        };
+
+        const addLocalVideo = (stream) => {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.muted = true; // Mute local video
+            videosContainer.appendChild(video);
+        };
+
+        const createPeerConnection = async (peerId, stream) => {
+            const peerConnection = new RTCPeerConnection({
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' }
+                ]
+            });
+
+            peerConnections[peerId] = peerConnection;
+
+            stream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, stream);
+            });
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.send(JSON.stringify({ type: 'candidate', candidate: event.candidate, peerId }));
+                }
+            };
+
+            peerConnection.ontrack = (event) => {
+                addRemoteVideo(event.streams[0], peerId);
+            };
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            socket.send(JSON.stringify({ type: 'offer', offer, peerId }));
+        };
+
+        const addRemoteVideo = (stream, peerId) => {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            videosContainer.appendChild(video);
+        };
+
+        const handleOffer = async (data) => {
+            const peerConnection = await createPeerConnection(data.peerId, localStream);
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.send(JSON.stringify({ type: 'answer', answer, peerId: data.peerId }));
+        };
+
+        const handleAnswer = async (data) => {
+            const peerConnection = peerConnections[data.peerId];
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+        };
+
+        const handleCandidate = async (data) => {
+            const peerConnection = peerConnections[data.peerId];
+            await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+        };
+
+        startCall();
+    </script>
+</body>
+</html>

@@ -1,15 +1,20 @@
-{%extends 'base/base.html'%}
-{%block title%}
-    group_call
-{%endblock%}
-{%load static%}
-{%block head%}
-{%endblock%}
-{%block body%}
-    <h1>Video Conference</h1>
-    <div id = "videos"></div>
-    {{course.id|json_script:'course-id'}}
-    {{request.user.username|json_script:'username'}}
-    <script src="{% static 'js/call.js' %}"></script>    
+{% extends 'base/base.html' %}
 
-{%endblock%}
+{% block title %}
+  group_call
+{% endblock %}
+{% load static %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/chat/call.css' %}" />
+{% endblock %}
+{% block body %}
+  <h1>Video Conference</h1>
+  <div id="peers">
+  </div>
+  <div id="videos">
+      <video id="me" autoplay></video>
+  </div>
+  {{ course.id|json_script:'course-id' }}
+  {{ request.user.username|json_script:'username' }}
+  <script src="{% static 'js/call.js' %}"></script>
+{% endblock %}

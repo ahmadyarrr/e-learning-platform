@@ -2,38 +2,45 @@ from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 import json
 from asgiref.sync import async_to_sync
 import time
-from educa.settings import REDIS_DB_HOST,REDIS_DB_NAME, REDIS_DB_PORT
 import redis
-
+from os import environ
+from educa.settings import REDIS_DB_HOST, REDIS_DB_NAME, REDIS_DB_PORT
 """
     Note: self.scope returns all data about the socket connection
 """
-
 redis_client = redis.Redis(host=REDIS_DB_HOST,
-                           port=REDIS_DB_PORT,
-                           db=REDIS_DB_NAME)
+                           port=REDIS_DB_PORT
+                           , db=REDIS_DB_NAME)
+
 
 def get_messages(course_id):
     key = f"mes_c{course_id}"
-    messages = json.loads(redis_client.get(key) or b'{}')
+    messages = json.loads(redis_client.get(key) or b"{}")
     return messages
-    
-def delete_message(course_id,m_id,sender_id):
-    messages = get_messages(course_id,sender_id)
+
+
+def delete_message(course_id, m_id, sender_id):
+    messages = get_messages(course_id, sender_id)
     message_key = f"message_#{m_id}"
-    
-    if  message_key in messages.keys():
+
+    if message_key in messages.keys():
         del messages[f"message_#{m_id}"]
-        redis_client.set(message_key,json.dumps(messages))
+        redis_client.set(message_key, json.dumps(messages))
     return 0
 
-def save_message(message,course_id,ntime,sender_id,sender_name):
+
+def save_message(message, course_id, ntime, sender_id, sender_name):
     key = f"mes_c{course_id}"
-    message = {'message':message,'sender_id':sender_id,'sender':sender_name,'time':ntime,'cid':course_id}
-    messages = get_messages(course_id) or {} 
-    messages[f'message_#{messages.__len__()}'] = message    
-    redis_client.set(key,json.dumps(messages))
-    
+    message = {
+        "message": message,
+        "sender_id": sender_id,
+        "sender": sender_name,
+        "time": ntime,
+        "cid": course_id,
+    }
+    messages = get_messages(course_id) or {}
+    messages[f"message_#{messages.__len__()}"] = message
+    redis_client.set(key, json.dumps(messages))
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -54,26 +61,26 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def receive(self, text_data=None, bytes_data=None):
-        
+
         if text_data:
             data = json.loads(text_data)
-            message = data.get("message",None)
-            
+            message = data.get("message", None)
+
             if message:
                 print("message received:", message)
                 nano_time = data.get("nano_time")
                 sender_id = self.user.id
                 sender_name = self.user.username
                 course_id = self.course_id
-                save_message(message,course_id,nano_time,sender_id,sender_name)
-                
+                save_message(message, course_id, nano_time, sender_id, sender_name)
+
                 async_to_sync(self.channel_layer.group_send)(
                     self.course_group_name,
                     {
                         "type": "chat_message",
                         "message": message,
                         "sender": sender_name,
-                        "time": nano_time
+                        "time": nano_time,
                     },
                 )
 
@@ -86,11 +93,11 @@ class CallConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         # setting the group name
-        self.room_name = self.scope['url_route']['course_id']
-        self.room_group_name = f"call_{self.room_name}"
+        self.room_name = self.scope["url_route"]["kwargs"]["course_id"]
+        self.room_group_name = f"call-group-{self.room_name}"
+        
         # adding the user to active users
         self.active_users.add(self.channel_name)
-        
         # adding the user to the group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
@@ -102,77 +109,65 @@ class CallConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         # removing the user from active users set
-        print('disconnect from server....')
+        print("disconnect from server....")
         self.active_users.remove(self.channel_name)
 
-        self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
         # Notifying others
-        self.channel_layer.group_send(
+        await self.channel_layer.group_send(
             self.room_group_name, {"type": "user_left", "user": self.channel_name}
         )
 
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         if "offer" in data:
-            self.channel_layer.group_send(
+            await self.channel_layer.group_send(
                 self.room_group_name,
-                {"type": "offer", "offer": data["offer"], "user": self.channel_name},
+                {
+                    "type": "send_offer",
+                    "offer": data["offer"],
+                    "sender": data["sender"],
+                },
             )
 
         elif "answer" in data:
-            self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "answer", "answer": data["answer"], "user": self.channel_name},
-            )
-        elif "candidate" in data:
-            self.channel_layer.group_send(
+            await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    "type": "candidate",
+                    "type": "send_answer",
+                    "answer": data["answer"],
+                    
+                },
+            )
+        elif "candidate" in data:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "send_candidate",
                     "candidate": data["candidate"],
-                    "user": self.channel_name,
+                    
                 },
             )
 
     async def user_joined(self, event):
-        print('user joined called on server')
-        await self.send(
-            text_data=json.dumps({"type": "user_joined", "user": event["user"]})
-        )
+        await self.send(text_data=json.dumps({"type": "joined", "user": event["user"]}))
 
     async def user_left(self, event):
-        print('user left called on server')
-        
+        await self.send(text_data=json.dumps({"type": "left", "user": event["user"]}))
+
+    async def send_offer(self, event):
         await self.send(
-            text_data=json.dumps({"type": "user_left", "user": event["user"]})
+            text_data=json.dumps({"type": "offer", "offer": event["offer"],"sender":event["sender"]})
         )
 
-    async def offer(self, event):
-        print('offer called on server')
-
+    async def send_candidate(self, event):
         await self.send(
-            text_data=json.dumps(
-                {"type": "offer", "offer": event["offer"], "user": event["user"]}
-            )
+            text_data=json.dumps({"type": "candidate", "candidate": event["candidate"]})
         )
 
-    async def candidate(self, event):
-        print('candidate called on server')
+    async def send_answer(self, event):
         await self.send(
-            text_data=json.dumps(
-                {
-                    "type": "candidate",
-                    "candidate": event["candidate"],
-                    "user": event["user"],
-                }
-            )
+            text_data=json.dumps({"type": "answer", "answer": event["answer"]})
         )
 
-    async def answer(self, event):
-        print('answer called on server')
-        await self.send( 
-            text_data=json.dumps(
-                {"type": "answer", "answer": event["answer"], "user": event["user"]}
-            )
-        )
