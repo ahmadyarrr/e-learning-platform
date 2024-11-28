@@ -3,115 +3,139 @@ const local_video = document.getElementById('me');
 local_video.autoplay = true;
 const videosContainer = document.getElementById('videos')
 videosContainer.appendChild(local_video)
+const me = document.getElementById("username").textContent
+const myId = document.getElementById("user-id").textContent
+
+//STUN
+var configuration = {
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' } // Example STUN server
+    ]
+};
 
 // getting user media
 var localStream;
-const constranits = { 'video': true, 'audio': true }
+const constranits = { 'video': true, 'audio': false }
+
 navigator.mediaDevices.getUserMedia(constranits).then(stream => {
     localStream = stream
-    let myUserName;
-    let peers = new Array();
-    let peerConnection = new RTCPeerConnection();
-    // handling any tracks to this RTC party
-    peerConnection.ontrack = (event) => {
-        const pair_video = document.createElement('video');
-        pair_video.autoplay = true;
-        pair_video.srcObject = event.streams[0];
-        videosContainer.appendChild(pair_video)
-    }
-
-    //  Ice candidates comming to this RTC party 
-    peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-            websoc.send(JSON.stringify({ "type": "candidate", 'candidate': event.candidate }))
-        }
-    };
-    
-    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream))
+    let peers = {};
+    let amINew = true
+    let callOwner = "nobody"
+    let my_channel_name;
     local_video.srcObject = stream;
 
-    // making the url of call consumer
+    // connecting to signaling server
     const course_id = JSON.parse(document.getElementById('course-id').textContent)
     const url = "ws://" + window.location.host + "/ws/call/room/" + course_id + "/"
     const websoc = new WebSocket(url)
-    var peerCounter = 0
 
-    // receving the answer and handling it with appropriate method
     websoc.onmessage = async (event) => {
-        const data = JSON.parse(event.data)
-        const type = data.type
-        const user = data.user
-        if (type == 'joined') {
-            peers.push(peerConnection); 
-            peerCounter += 1 
-            console.log("user joied ", peers.length,peerConnection)
-            if (peerCounter > 1) {
-                console.log("lenght > 1")
-                document.getElementById("peers").innerHTML += `<button type="button" id="call${user}" >call${user}</button>`
-                document.getElementById(`call${user}`).addEventListener("click", function(){
-                    sendOffer(myUserName);
-                } )
-            }
-            else{
-                myUserName = user;
+        data = JSON.parse(event.data)
+        message_type = data.type
+
+        if (message_type == "user_joined") {
+            if (amINew) {
+                my_channel_name = data.user
+                users = data.users
+                users.forEach(channel_name => {
+                    if (channel_name != my_channel_name) {
+                        createPeerConneciton(my_channel_name, channel_name)
+                    }
+                });
+                amINew = false
             }
         }
-        else if (type == 'left') {
-            console.log('user left---')
+        else if (message_type == "offer") {
+            if (data.to == my_channel_name) {
+                console.log("offer came from ", data.from)
+                await handleOffer(data.from, data.offer)
+            }
         }
-        else if (type == 'offer') {
-            if (data.sender != myUserName){
-                console.log("handling the offer ")
-                await handleOffer(data)
+        else if (message_type == "answer") {
+            if (data.to == my_channel_name) {
+                console.log("answer came from..", data.from)
+                await handleAnswer(data.from, data.answer)
+            }
 
-            } 
-            
         }
-        else if (type == "answer") {
-            // console.log('an answer to the offer came-----')
-            await answerd(data)
+        else if (message_type == "candidate") {
+            console.log("--------------------------", data.candidate)
+            if (data.to == my_channel_name) {
+                console.log("ice candidate came... from", data.from)
+                await handleIceCandidate(data.from, data.candidate)
+            }
         }
-        else if (type == "candidate") {
-            // console.log('candidates are received from the party ----')
-            await handleCandidate(data)
+        else if (message_type == "user_left") {
+            console.log()
         }
     }
+    async function createPeerConneciton(from, to) {
+        const peerConnection = new RTCPeerConnection()
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream))
+        peerConnection.ontrack = (event) => {
+            const pair_video = document.createElement('video');
+            pair_video.autoplay = true;
+            pair_video.srcObject = event.streams[0];
+            videosContainer.appendChild(pair_video)
+        }
+        const sentCandidates = new Set()
+        //  Ice candidates comming to this RTC party 
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate && !sentCandidates.has(event.candidate)) {
+                websoc.send(JSON.stringify({ "type": "candidate", 'candidate': event.candidate, "from": my_channel_name, 'to': from }))
+                sentCandidates.add(event.candidate)
+            }
+        };
 
+        // creating an offer and setting local description from offer
+        const offer = await peerConnection.createOffer()
+        await peerConnection.setLocalDescription(offer)
 
-    async function sendOffer(senderName) {
-        // creating offer and a local description
-        const offer = await peerConnection.createOffer();
-        peerConnection.setLocalDescription(offer)
-        websoc.send(JSON.stringify({ "type": "offer", 'offer': offer, 'sender':senderName}))
+        //saving the peerObject to peers
+        peers[to] = peerConnection
+
+        // sending the offer
+        websoc.send(JSON.stringify({ "type": "offer", "from": from, "to": to, "offer": offer }))
+        console.log("offer sent to ", to)
     }
+    async function handleOffer(from, offer) {
+        // this function sends an answer back to 'from' user
+        const peerConnection = new RTCPeerConnection()
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream))
+        peerConnection.ontrack = (event) => {
+            const pair_video = document.createElement('video');
+            pair_video.autoplay = true;
+            pair_video.srcObject = event.streams[0];
+            videosContainer.appendChild(pair_video)
+        }
+        const sentCandidates = new Set()
+        //  Ice candidates comming to this RTC party 
+        peerConnection.onicecandidate = (event) => {
+            console.log("generating ice candidates....")
+            if (event.candidate && !sentCandidates.has(event.candidate)) {
+                websoc.send(JSON.stringify({ "type": "candidate", 'candidate': event.candidate, "from": my_channel_name,'to':from }))
+                sentCandidates.add(event.candidate)
+            }
+        };
+        // setting remote things
+        peerConnection.setRemoteDescription(new RTCSessionDescription(offer))
 
-    async function handleOffer(data) {
-        // creating a peer connection, when an offer comes
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer))
-
-        // sending the answer back accoding to offer
+        // setting the local things and sending the answer
         const answer = await peerConnection.createAnswer()
-        await peerConnection.setLocalDescription(answer)
-        websoc.send(JSON.stringify({ "type":'answer','answer': answer}))
+        peerConnection.setLocalDescription(answer)
+        websoc.send(JSON.stringify({ "type": "answer", "answer": answer, "from": my_channel_name, "to": from }))
+        console.log("answer sent to", from)
     }
 
-    async function answerd(data) {
-        console.log(' other party answered, setting remote description---')
-        const peerConnection = peers[0]
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-
+    async function handleAnswer(from, answer) {
+        const peerConnection = peers[from]
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer))
     }
 
-    async function handleCandidate(data) {
-        console.log("ICE came from other party, adding IceCandidate on peerConnection---")
-        const peerConnection = peers[0];
-        await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-
+    async function handleIceCandidate(from, candidate) {
+        const peerConnection = peers[from]
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     }
-
-
-
-}).catch(error => {
-    console.log('error in acheving access to media', error)
 })
 

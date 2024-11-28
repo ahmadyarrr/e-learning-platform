@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Recorder</title>
+</head>
+<body>
+    <video id="video" autoplay playsinline></video>
+    <button id="start">Start Recording</button>
+    <button id="stop" disabled>Stop Recording</button>
+    <video id="recorded" controls></video>
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        // Get access to the camera
+        navigator.mediaDevices.getUserMedia({ video: true,audio:true })
+            .then(stream => {
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+
+                // Create MediaRecorder instance
+                mediaRecorder = new MediaRecorder(stream);
+
+                // Handle data available event
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                // Handle stop event
+                mediaRecorder.onstop = () => {
+                    const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const recordedVideo = document.getElementById('recorded');
+                    recordedVideo.src = URL.createObjectURL(recordedBlob);
+                };
+            });
+
+        // Start recording
+        document.getElementById('start').onclick = () => {
+            recordedChunks = [];
+            mediaRecorder.start();
+            document.getElementById('start').disabled = true;
+            document.getElementById('stop').disabled = false;
+        };
+
+        // Stop recording
+        document.getElementById('stop').onclick = () => {
+            mediaRecorder.stop();
+            document.getElementById('start').disabled = false;
+            document.getElementById('stop').disabled = true;
+        };
+    </script>
+</body>
+</html>

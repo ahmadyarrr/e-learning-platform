@@ -16,5 +16,7 @@
   </div>
   {{ course.id|json_script:'course-id' }}
   {{ request.user.username|json_script:'username' }}
+  {{ request.user.id|json_script:'user-id' }}
+
   <script src="{% static 'js/call.js' %}"></script>
 {% endblock %}

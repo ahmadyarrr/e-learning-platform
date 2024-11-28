@@ -25,8 +25,10 @@ from .mixins import (
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
-from django.contrib.postgres.search import SearchVector,TrigramSimilarity
+from django.contrib.postgres.search import SearchVector, TrigramSimilarity
 from django.contrib.auth.decorators import login_required
+
+
 def slugify(sen):
     return "-".join(sen.split())
 
@@ -102,14 +104,16 @@ class PublicCourseDetail(DetailView):
         context = super().get_context_data(**kwargs)
         context["enroll_form"] = EnrollCourseForm(initial={"course": self.get_object})
         return context
+
     def get(self, request, *args, **kwargs):
         """overriden to redirect the course instructor to edit page"""
         instructor_id = self.get_object().instructor.id
-        user_id =  self.request.user.id
+        user_id = self.request.user.id
         if instructor_id == user_id:
-            return redirect("course:course_update",self.get_object().id)
+            return redirect("course:course_update", self.get_object().id)
         # go normal
-        return super().get(request,*args, **kwargs)
+        return super().get(request, *args, **kwargs)
+
 
 class CourseManageView(InstructorCourseMixin, ListView):
     permission_required = "instructors.instructors_access"
@@ -240,7 +244,7 @@ class ContentCreateUpdateView(View, TemplateResponseMixin):
 
 
 class ContentDelete(View):
-    
+
     def post(self, request, id):
         content = get_object_or_404(
             Content, id=id, module__course__instructor=request.user
@@ -351,14 +355,19 @@ class courseEnrollView(FormView, LoginRequiredMixin):
         # this method is called by super().form_valid in return redirect HttpResponseRedirect(self.get_success_url)
         return reverse_lazy("students:student_course_detail", args=[self.course.id])
 
-def search(request,query=None):
+
+def search(request, query=None):
     try:
         courses = Course.objects.all()
         query = request.GET["query"]
         if len(query) > 1:
-            result = [[item.slug,item.title] for item in courses.annotate(term=SearchVector("title", "overview")).\
-                filter(term=query)]
-            return JsonResponse({"result":result})
+            result = [
+                [item.slug, item.title]
+                for item in courses.annotate(
+                    term=SearchVector("title", "overview")
+                ).filter(term=query)
+            ]
+            return JsonResponse({"result": result})
         else:
             return HttpResponseForbidden
     except Exception as e:
