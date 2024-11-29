@@ -18,6 +18,6 @@ urlpatterns = [
     ),
     path("addseen/", views.add_seen, name="addseen"),
     path("getseen/", views.list_seen, name="getseen"),
-    path("join-exam/<int:pk>", views.join_exam, name="join_exam"),
+    path("join-exam/<pk>", views.join_exam, name="join_exam"),
     path("save/", views.save, name="save"),
 ]

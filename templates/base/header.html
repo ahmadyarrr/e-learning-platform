@@ -1,3 +1,4 @@
+{% load static %}
 <header id="header-main">
   <h1 id="course-title"><a href="/">Educa</a></h1>
   <nav id="topnav">
@@ -17,7 +18,15 @@
         <input id="search-input" class="search-input" type="text" placeholder="Search for anything..." aria-label="Search" />
         <ul id="search-result" role="listbox"></ul>
       </div>
+      <div id="notf-icon-whole">
+        <img style="width: 30px;" src="{% static 'icons/bell.png' %}" />
+        <span class="notification-badge">3</span>
+        <div id="notf-list" class="notf-list">
+          <li>Notifications</li>
+        </div>
+      </div>
     </div>
+
     <div id="account">
       {% if user.is_authenticated %}
         <div class="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -11,9 +11,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{% static 'css/course/base.css' %}" />
     <link rel="stylesheet" href="{% static 'boot/css/bootstrap.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'boot/css/bootstrap.css' %}" />
-    <link rel="stylesheet" href="{% static 'boot/css/bootstrap.grid.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/course/header.css' %}" />
 
     {% block head %}
 
@@ -21,10 +18,12 @@
   </head>
   <body>
     {% include './header.html' %}
-    <dialog id="whole-loader" style="all: unset; margin-top: 10%;margin-left: 45%;" >
-      <div id="loader"></div>
-      <p>Loading...</p>
-    </dialog>
+    {% if not default_start %}
+      <dialog id="whole-loader" style="all: unset; margin-top: 10%;margin-left: 45%;">
+        <div id="loader"></div>
+        <p>Loading...</p>
+      </dialog>
+    {% endif %}
 
     <div id="content" style="display: none;">
       {% block body %}
@@ -39,6 +38,7 @@
     {% endblock %}
     <script>
             window.addEventListener("DOMContentLoaded",(event) => {
+              // -------------------search logic here--------------------------------
               const searchInput = document.getElementById("search-input")
               const resultListElement = document.getElementById("search-result")
               var timeout;
@@ -85,21 +85,53 @@
                 searchInput.value = searchInput.ariaPlaceholder
                 resultListElement.style.display = "none"
               })
-              // loader
+              // -------------------notification-------------------------------------
+              const notf_dropdown = document.getElementById('notf-list')
+
+              {%if request.user.student_profile%}
+                {%for course_id in enrolled_courses_ids%}
+                  handleNotf({{course_id}})
+                {% endfor %}
+
+              {%endif%}
 
               {%block domeready%}
 
               {%endblock%}
 
+              function handleNotf(course_id){
+                const websock_url = "ws://" + window.location.host + "/ws/notf/students/" + course_id + "/"
+                console.log('generated url', websock_url)
+                const notf_websock = new WebSocket(websock_url)
+                console.log('connected to students_notification...')
+                notf_websock.onmessage = async (event)=>{
+                  const message = JSON.parse(event.data)
+                  console.log('message came.....', message)
+                    if (message.type=="recv_notf"){
+                      console.log("message",message.notf)
+                      const notf_text = message.notf
+                      console.log(notf_dropdown)
+                      notf_dropdown.innerHTML += `${notf_text}`
+                    }
+              }
+            }
+            // ---------------------loader---------------------------------------------
+            const loader = document.getElementById("whole-loader")
+            if (loader != null){
+              loader.showModal()
+              window.addEventListener("load",(event)=>{
+                setTimeout(function(e){
+                  loader.remove()
+                  document.getElementById("content").style.display = "block"
+                },200)
             })
-            document.getElementById("whole-loader").showModal()
-            window.addEventListener("load",(event)=>{
-              setTimeout(function(e){
-                document.getElementById("whole-loader").remove()
+            }
+            else{
                 document.getElementById("content").style.display = "block"
-              },200)
-              
-            })
+
+            }
+          
+          })
     </script>
   </body>
 </html>

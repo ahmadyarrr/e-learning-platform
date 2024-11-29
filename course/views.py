@@ -335,6 +335,7 @@ class ViewCourses(View, TemplateResponseMixin):
                 cache.set("all_courses", all_courses)
 
         courses = Course.objects.all().annotate(count_module=Count("modules"))
+        enrolled_courses = None
         return self.render_to_response(
             {"courses": courses, "subjects": subjects, "subject": subject}
         )

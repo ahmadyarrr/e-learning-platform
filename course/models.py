@@ -150,7 +150,7 @@ class Test(models.Model):
     active = models.BooleanField(default=False)
     total_score = models.PositiveSmallIntegerField(default=60)
     def get_absolute_url(self):
-        return reverse("courses/test/test_detail.html", kwargs={"pk": self.pk})
+        return reverse("students:join_exam", kwargs={"pk": self.pk})
 
     def __str__(self):
         return "Test " + self.title

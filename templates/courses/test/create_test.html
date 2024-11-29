@@ -5,7 +5,6 @@
 {%endblock%}
 
 {%block body%}
-    <script src="{% static 'js/csrf.js' %}"></script>
     <dialog>
         <h2>Creating a test for course `{{course.title|truncatechars:20}}`</h2>
         <input type="text"  class="w-100" id="test_title" name="test_title"  placeholder="Test Title">
@@ -43,15 +42,21 @@
     <div id="sections" style="padding-bottom: 15px;">
 
     </div>
+    <script src="{% static 'js/csrf.js' %}"></script>
     <script src="{%static 'js/create_test.js'%}"></script>
     
 {%endblock%}
 {%block include_js%}
+
     <script type="application/json" id="make-test-url">
         {{request.get_host}}{%url 'instructors:make_test'%}
     </script>
     <script type="application/json" id="success-redirect">
         {{request.get_host}}{%url 'course:manage_course_view'%}
     </script>
+    <script type="application/json" id="course-id">
+        {{course.id}}
+    </script>
+    
     
 {%endblock%}

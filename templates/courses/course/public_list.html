@@ -22,13 +22,20 @@
           {% for course in sub.courses.all %}
             {% with subject=course.subject %}
               <div id="item">
-                
-                <a href="{%if not course.modules.count == 0 %}{% url 'course:course_detail' course.slug %}{%else%}{%endif%}">
-                    <img src="{{ course.image.url }}" alt="ٔcourse-{{ course.title }}-image" class="slider-img" />
-                    <strong>{{ course.title }}</strong>
+                <a href="{% if not course.modules.count == 0 %}
+                    {% url 'course:course_detail' course.slug %}
+                  {% endif %}">
+                  <img src="{{ course.image.url }}" alt="ٔcourse-{{ course.title }}-image" class="slider-img" />
+                  <strong>{{ course.title }}</strong>
                 </a>
                 <a href="#">
-                    <p>Instructor: {%if course.instructor == request.user%}You{%else%}{{ course.instructor.username }}{%endif%}</p>
+                  <p>
+                    Instructor:{% if course.instructor == request.user %}
+                      You
+                    {% else %}
+                      {{ course.instructor.username }}
+                    {% endif %}
+                  </p>
                 </a>
               </div>
             {% endwith %}
@@ -37,10 +44,11 @@
 
         <button class="button btn-left"><span>&lt;</span></button>
         <button class="button btn-right"><span>&gt;</span></button>
-        <script src="{% static 'js/public_list.js' %}"></script>
-
       </div>
     </div>
+
     <br />
   {% endfor %}
-{% endblock %}
+  <script src="{% static 'js/public_list.js' %}"></script>
+
+  {% endblock %}

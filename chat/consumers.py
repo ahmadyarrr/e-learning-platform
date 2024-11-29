@@ -51,6 +51,7 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             self.course_group_name, self.channel_name
         )
+        
         self.user = self.scope["user"]
         self.accept()
 

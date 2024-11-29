@@ -4,6 +4,7 @@ from django.shortcuts import render
 from allauth.account.views import SignupView
 from django.views.generic.base import TemplateResponseMixin
 from course.models import Course, Test, TestSection, TestCase, Option
+from notification.models import Notification
 from .models import InstructorProfile
 from django.contrib.auth import login
 from django.contrib.auth.decorators import  login_required,permission_required
@@ -15,6 +16,7 @@ from pytz import timezone as py_timezone
 from pytz import utc
 from .tasks import mark_test_inactive
 from datetime import timedelta
+from django.contrib.contenttypes.models import ContentType
 
 
 # Create your views here.
@@ -128,11 +130,13 @@ def create_test_view(request, course_id=None):
                 data in JSON: [{s_title:,s_id, type:, n_q:, q_list: [{value,options:[], c_answer},{},{}]}, {nextSec}]
             """
             data = body["data"]  # array of questions
+            test = None
             for sec in data:
                 sec_title = sec["section_title"]
                 sec_db_id = sec["section_id"]
                 questions = sec["questions"]
                 section_obj = TestSection.objects.get(id=sec_db_id)
+                
                 for index, q in enumerate(questions, 1):
                     question = questions["q" + str(index)]
                     q_value = question["question"] 
@@ -147,7 +151,17 @@ def create_test_view(request, course_id=None):
                             value=opt,
                             is_answer=bool(index == int(c_answer)),
                         )
-            return JsonResponse({"OK": "yes"})
+            test = section_obj.test
+            course = test.course
+            # sending the notification
+            notf = Notification.objects.create(
+                text= f"A New Test For {course.title}",
+                notification_type = "test_notification",
+                content_type = ContentType.objects.get_for_model(Test),
+                object_id=test.id
+            )
+            
+            return JsonResponse({"OK": "yes","notf_id":notf.id})
     else:
         """
         Here, GET request is handled by following actions
@@ -174,7 +188,7 @@ def create_test_view(request, course_id=None):
             pass
         return render(
             request,
-            "courses/course/create_test.html",
+            "courses/test/create_test.html",
             context={
                 "course": course,
                 "default_start": start_half_hour.split(".")[0],

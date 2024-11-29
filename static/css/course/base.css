@@ -55,7 +55,7 @@ li {
 #account {
   /* margin-top: 0.5%; */
   margin-right: 5%;
-  width: 30%;
+  width: 20%;
   border: 6px;
 }
 
@@ -161,6 +161,52 @@ li {
   box-shadow: 0px 0px 4px 6px lightblue;
 }
 
+#notf-icon-whole {
+  justify-items: center;
+  justify-content: center;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 3%;
+}
+
+#notf-icon-whole li {
+  font-size: 15px;
+  display: block;
+
+}
+
+#notf-list {
+  margin-top: 10%;
+  display: none;
+  color: black;
+  text-decoration: none;
+  border-radius: 6px;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+
+}
+
+#notf-icon-whole:hover #notf-list {
+  display: block;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  /* Adjust as needed */
+  right: -10px;
+  /* Adjust as needed */
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 3px 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .dropdown {
   margin-top: 5%;
   position: relative;
@@ -205,6 +251,7 @@ li {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
 
 
 .dropdown:hover .dropdown-button {

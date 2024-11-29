@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     '_account.apps.AccountConfig',
     'instructors.apps.InstructorsConfig',
+    'notification',
     "chat",
     "rest_framework",
     "rest_framework.authtoken",
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     # for response cache part, retriving cache data back from cache
     # 'django.middleware.cache.FetchFromCacheMiddleware',
+    
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -85,7 +87,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                '_account.context_processors.get_profile',
+                "_account.context_processors.get_profile",
+                "students.context_processors.get_enrolled_courses",
             ],
         },
     },
