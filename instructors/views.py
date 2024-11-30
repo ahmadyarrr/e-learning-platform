@@ -154,12 +154,12 @@ def create_test_view(request, course_id=None):
             test = section_obj.test
             course = test.course
             # sending the notification
-            notf = Notification.objects.create(
+            notf = Notification.objects.get_or_create(
                 text= f"A New Test For {course.title}",
-                notification_type = "test_notification",
+                notification_type = "test",
                 content_type = ContentType.objects.get_for_model(Test),
                 object_id=test.id
-            )
+            )[0]
             
             return JsonResponse({"OK": "yes","notf_id":notf.id})
     else:

@@ -6,12 +6,12 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateResponseMixin
-from django.views.generic import FormView
 from django.views import View
 from django.shortcuts import redirect
 from django.apps import apps
 from django.forms import modelform_factory
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from notification.models import Notification
 from students.forms import EnrollCourseForm
 from .forms import ModuleForm
 from .models import Content, Course, Module, Subject
@@ -25,8 +25,8 @@ from .mixins import (
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.core.cache import cache
-from django.contrib.postgres.search import SearchVector, TrigramSimilarity
-from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchVector
+from django.contrib.contenttypes.models import ContentType
 
 
 def slugify(sen):
@@ -333,28 +333,16 @@ class ViewCourses(View, TemplateResponseMixin):
                 # if cache miss
                 courses = all_courses
                 cache.set("all_courses", all_courses)
-
         courses = Course.objects.all().annotate(count_module=Count("modules"))
-        enrolled_courses = None
         return self.render_to_response(
-            {"courses": courses, "subjects": subjects, "subject": subject}
+            {
+                "courses": courses,
+                "subjects": subjects,
+                "subject": subject,
+            }
         )
 
 
-class courseEnrollView(FormView, LoginRequiredMixin):
-    course = None
-    form_class = EnrollCourseForm
-
-    def form_valid(self, form):
-        # form valid always should return an httpResponse, the form is validated and data are available here
-        self.course = form.cleaned_data["course"]
-        self.course.students.add(self.request.user)
-        print(self.course.students.all())
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        # this method is called by super().form_valid in return redirect HttpResponseRedirect(self.get_success_url)
-        return reverse_lazy("students:student_course_detail", args=[self.course.id])
 
 
 def search(request, query=None):

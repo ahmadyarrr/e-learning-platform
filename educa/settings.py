@@ -89,6 +89,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "_account.context_processors.get_profile",
                 "students.context_processors.get_enrolled_courses",
+                "students.context_processors.get_notifications",
             ],
         },
     },

@@ -26,15 +26,16 @@
     {% endif %}
 
     <div id="content" style="display: none;">
+      <script type="application/json" id="search-url">
+          {{request.get_host}}{%url 'course:search' %}
+      </script>
       {% block body %}
-
+      
       {% endblock %}
     </div>
     {% include './footer.html' %}
     {% block include_js %}
-      <script type="application/json" id="search-url">
-        {{request.get_host}}{%url 'course:search' %}
-    </script>
+    
     {% endblock %}
     <script>
             window.addEventListener("DOMContentLoaded",(event) => {
@@ -85,9 +86,9 @@
                 searchInput.value = searchInput.ariaPlaceholder
                 resultListElement.style.display = "none"
               })
-              // -------------------notification-------------------------------------
+              // -------------------this part is for real-time notification-------------------------------------
               const notf_dropdown = document.getElementById('notf-list')
-
+              const notf_badge = document.querySelector('.notification-badge')
               {%if request.user.student_profile%}
                 {%for course_id in enrolled_courses_ids%}
                   handleNotf({{course_id}})
@@ -112,9 +113,31 @@
                       const notf_text = message.notf
                       console.log(notf_dropdown)
                       notf_dropdown.innerHTML += `${notf_text}`
+                      notf_badge.innerText = parseInt(notf_badge.innerText) + 1
                     }
               }
             }
+            // ---------- this part marks notification as read using ajax--------------
+            const notfs = document.querySelectorAll('.notf-link')
+            console.log(notfs)
+            notfs.forEach(notf_link => {
+              notf_link.addEventListener('click', function(event){
+                event.preventDefault()
+                console.log('sssssssssssssssssss')
+                const main_url = this.href
+                const mark_read_url = window.location.protocol+"//"+window.location.host+"/notification/mark-read/"+this.dataset.notification_id
+                fetch(mark_read_url).then(answer => answer.json()).then(answer =>{
+                  if (answer.OK == "0"){
+                    window.location.href = main_url
+                  }
+                  else{
+                    console.log('there was an error')
+                  }
+
+                })
+
+              })
+            })
             // ---------------------loader---------------------------------------------
             const loader = document.getElementById("whole-loader")
             if (loader != null){

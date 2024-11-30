@@ -247,17 +247,23 @@ btn.addEventListener("click", function (e) {
             };
             fetch(url, options).then(response => response.json()).then(status => {
               if (status['OK'] == "yes") {
+                // this part sends a the notification id to all students
                 const websoc_url = "ws://" + window.location.host + "/ws/notf/students/" + document.getElementById("course-id").innerText.trim() + "/"
                 const notf_websoc = new WebSocket(websoc_url)
+
                 notf_websoc.onopen = function (event) {
                   notf_websoc.send(JSON.stringify({ 'type': 'share_notf', 'notf_id': status['notf_id'] }))
-                  console.log('successfully established healthy connection, message sent', event)
+                }
+                notf_websoc.onmessage = async (event) =>{
+                  const data = JSON.parse(event.data)
+                  if (data.type == "recv_notf"){
+                    // unless the server channels shares the notficiation, waiting .....
+                    window.location.href = window.location.protocol + "//" + document.getElementById("success-redirect").innerText.trim()
+                  }
                 }
                 notf_websoc.onerror = function (event) {
-                  console.log('error', event)
+
                 }
-                
-                // window.location.href = window.location.protocol + "//" + document.getElementById("success-redirect").innerText.trim()
               }
             })
           });

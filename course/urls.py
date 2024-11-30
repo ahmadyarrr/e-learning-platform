@@ -38,7 +38,6 @@ urlpatterns = [
     path("content/<int:id>/delete",views.ContentDelete.as_view(), name="module_content_delete"),
     path("module/order/",views.ModuleOrder.as_view(),name="order_module"),
     path("content/order/",views.ModuleContentOrder.as_view(),name="order_content"),
-    path('enroll',views.courseEnrollView.as_view(),name="enroll_student"),
     # details
     path('<slug:slug>/detail',views.PublicCourseDetail.as_view(),name="course_detail"),
     # search

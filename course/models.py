@@ -58,8 +58,11 @@ class Course(models.Model):
             )
         ]
 
-    def get_absolute_url(self):
-        return reverse("course:detail_course", kwargs={"id": self.pk})
+    def get_absolute_url(self,type_=None):
+        if type_ == "instructor":
+            return reverse("course:course_update", kwargs={"pk": self.pk})
+        else:
+            return reverse("course:course_detail", kwargs={"slug": self.slug})
 
     def __str__(self) -> str:
         return "Course -{}- by -{}-".format(self.title, str(self.instructor))

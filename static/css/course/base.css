@@ -166,7 +166,7 @@ li {
   justify-content: center;
   position: relative;
   display: inline-block;
-  padding-bottom: 3%;
+  padding-bottom: 5%;
 }
 
 #notf-icon-whole li {
@@ -176,7 +176,7 @@ li {
 }
 
 #notf-list {
-  margin-top: 10%;
+  margin-top: 30%;
   display: none;
   color: black;
   text-decoration: none;

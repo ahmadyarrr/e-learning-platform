@@ -23,7 +23,7 @@
       {% if not request.user.instructor_profile %} <!--user is not instructor-->
         {% if request.user.is_authenticated %} <!--user has logged in-->
             {% if not request.user in object.students.all %} <!--user is not enrolled-->
-              <form method="post" action="{% url 'course:enroll_student' %}">
+              <form method="post" action="{% url 'students:enroll_student' %}">
                 {% csrf_token %}
                 {{ enroll_form.as_p }}
                 <input type="submit" value="Enroll" class="btn btn-primary" />

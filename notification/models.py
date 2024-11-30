@@ -12,15 +12,13 @@ class Notification(models.Model):
     related_object = GenericForeignKey(
         "content_type", "object_id"
     )  # this dynammically findes the object
+    
+    read_by = models.ManyToManyField(
+        "auth.User",
+        related_name="my_read_notifications"
+    )
+    
+    class Meta:
+        ordering = ['-created']
 
 
-class ReadRecipt(models.Model):
-    user = models.ForeignKey(
-        "auth.User", on_delete=models.CASCADE, related_name="my_read_notifications"
-    )
-    at = models.DateTimeField(auto_now_add=True)
-    notification = models.ForeignKey(
-        "notification.Notification",
-        on_delete=models.CASCADE,
-        related_name="read_recipts",
-    )

@@ -6,13 +6,15 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth import login
+from django.urls import reverse_lazy
 from course.models import Content, Course, Module,Test, TestSubmission, Score
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import permission_required
 from django.views.generic.detail import DetailView
 from allauth.account.views import SignupView
-from students.forms import StduentSignUpCustomForm
+from notification.models import Notification
+from students.forms import EnrollCourseForm, StduentSignUpCustomForm
 from students.models import StudentProfile
 from django.views.generic.base import TemplateResponseMixin
 from django.contrib.auth import login
@@ -23,6 +25,8 @@ from pytz import timezone as py_tzone
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.contrib.contenttypes.models import ContentType
+from django.views.generic import FormView
 
 # Create your views here.
 redis_client = redis.Redis(host=REDIS_DB_HOST, port=REDIS_DB_PORT, db=REDIS_DB_NAME)
@@ -222,6 +226,29 @@ class ContentDetail(DetailView, LoginRequiredMixin, PermissionRequiredMixin):
         query = super().get_queryset()
         query = query.filter(module=self.kwargs["module_id"])
         return query
+
+
+class CourseEnrollView(FormView, LoginRequiredMixin):
+    course = None
+    form_class = EnrollCourseForm
+    def form_valid(self, form):
+        # form valid always should return an httpResponse, the form is validated and data are available here
+        self.course = form.cleaned_data["course"]
+        self.course.students.add(self.request.user)
+        # handling notification of enrollment --- not real-time, but you can....
+        Notification.objects.get_or_create(
+            text=f"You have a new student on Course -{self.course.title}-",
+            notification_type="enrollment",
+            object_id=self.course.id,
+            content_type=ContentType.objects.get_for_model(Course),
+        )
+
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        # this method is called by super().form_valid in return redirect HttpResponseRedirect(self.get_success_url)
+        return reverse_lazy("students:student_course_detail", args=[self.course.id])
+
 
 
 def add_seen(request):

@@ -16,6 +16,7 @@ urlpatterns = [
         views.StudentCourseDetail.as_view(),
         name="student_course_detail_module",
     ),
+    path("enroll", views.CourseEnrollView.as_view(), name="enroll_student"),
     path("addseen/", views.add_seen, name="addseen"),
     path("getseen/", views.list_seen, name="getseen"),
     path("join-exam/<pk>", views.join_exam, name="join_exam"),

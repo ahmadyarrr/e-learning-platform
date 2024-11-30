@@ -20,13 +20,17 @@
       </div>
       <div id="notf-icon-whole">
         <img style="width: 30px;" src="{% static 'icons/bell.png' %}" />
-        <span class="notification-badge">3</span>
+        <span class="notification-badge">{{amount_notifications}}</span>
         <div id="notf-list" class="notf-list">
           <li>Notifications</li>
+          {% for notf in my_notifications %}
+            <li>
+              <a class="notf-link" data-notification_id="{{ notf.id }}" href="{{ notf.related_object.get_absolute_url }}">{{ notf.text }}</a>
+            </li>
+          {% endfor %}
         </div>
       </div>
     </div>
-
     <div id="account">
       {% if user.is_authenticated %}
         <div class="dropdown" aria-haspopup="true" aria-expanded="false">
